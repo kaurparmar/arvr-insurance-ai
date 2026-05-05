@@ -25,6 +25,8 @@ Route::get('/calculator', function () {
     return view('calculator');
 });
 Route::post('/calculate', [CalculatorController::class, 'calculate']);
-
+Route::get('/vr',function(){
+    return view('vr');
+})->name('vr');
 Route::post('/purchase', [PolicyController::class, 'store']);
 require __DIR__.'/auth.php';
