@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'LifeShield XR') }} — AR/VR Life Insurance</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -19,36 +19,9 @@
             </style>
         @endif
     </head>
-    <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
-        <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
-            @if (Route::has('login'))
-                <nav class="flex items-center justify-end gap-4">
-                    @auth
-                        <a
-                            href="{{ url('/dashboard') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
-                        >
-                            Dashboard
-                        </a>
-                    @else
-                        <a
-                            href="{{ route('login') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
-                        >
-                            Log in
-                        </a>
-
-                        @if (Route::has('register'))
-                            <a
-                                href="{{ route('register') }}"
-                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                Register
-                            </a>
-                        @endif
-                    @endauth
-                </nav>
-            @endif
-        </header>
+    <body class="bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100">
+        <!-- Navbar -->
+        <x-navbar :is-authenticated="auth()->check()" />
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
                 <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
@@ -76,7 +49,235 @@
                                         <path
                                             d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001"
                                             stroke="currentColor"
-                                            stroke-linecap="square"
+         !-- Hero Section -->
+        <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-6">
+            <style>
+                .hero-section {
+                    min-height: calc(100vh - 64px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    overflow: hidden;
+                    padding: 2rem;
+                }
+
+                .hero-background {
+                    position: absolute;
+                    inset: 0;
+                    overflow: hidden;
+                    pointer-events: none;
+                    z-index: 0;
+                }
+
+                .bg-glow {
+                    position: absolute;
+                    border-radius: 50%;
+                    filter: blur(120px);
+                    opacity: 0.4;
+                }
+
+                .bg-glow-cyan {
+                    width: 600px;
+                    height: 600px;
+                    background: #00F0FF;
+                    top: -150px;
+                    left: -100px;
+                    animation: float 20s ease-in-out infinite;
+                }
+
+                .bg-glow-violet {
+                    width: 500px;
+                    height: 500px;
+                    background: #8B5CF6;
+                    bottom: -100px;
+                    right: -100px;
+                    animation: float 25s ease-in-out infinite 2s;
+                }
+
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px) translateX(0px); }
+                    25% { transform: translateY(-20px) translateX(10px); }
+                    50% { transform: translateY(0px) translateX(20px); }
+                    75% { transform: translateY(20px) translateX(10px); }
+                }
+
+                .hero-content {
+                    position: relative;
+                    z-index: 10;
+                    text-align: center;
+                    max-width: 900px;
+                    margin: 0 auto;
+                }
+
+                .hero-title {
+                    font-family: 'Syne', sans-serif;
+                    font-size: clamp(2.5rem, 8vw, 4rem);
+                    font-weight: 800;
+                    line-height: 1.1;
+                    margin-bottom: 2rem;
+                    letter-spacing: -0.02em;
+                }
+
+                .gradient-text {
+                    background: linear-gradient(90deg, #00F0FF 0%, #8B5CF6 50%, #FF3B6B 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    animation: gradientShift 6s ease infinite;
+                    background-size: 200% center;
+                }
+
+                @keyframes gradientShift {
+                    0%, 100% { background-position: 0% center; }
+                    50% { background-position: 100% center; }
+                }
+
+                .hero-description {
+                    font-size: clamp(1rem, 3vw, 1.25rem);
+                    color: #6B7280;
+                    line-height: 1.8;
+                    margin-bottom: 3rem;
+                    max-width: 700px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .hero-buttons {
+                    display: flex;
+                    gap: 1.5rem;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+
+                .btn {
+                    padding: 0.875rem 2rem;
+                    border-radius: 0.5rem;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                    border: 2px solid transparent;
+                    cursor: pointer;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 1rem;
+                }
+
+                .btn-primary {
+                    background: linear-gradient(135deg, #00F0FF 0%, #8B5CF6 100%);
+                    color: #0a0a0a;
+                    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+                }
+
+                .btn-primary:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+                }
+
+                .btn-secondary {
+                    background: transparent;
+                    color: #00F0FF;
+                    border-color: #00F0FF;
+                }
+
+                .btn-secondary:hover {
+                    background: rgba(0, 240, 255, 0.15);
+                    transform: translateY(-3px);
+                }
+
+                .features {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 2rem;
+                    margin-top: 4rem;
+                    padding-top: 4rem;
+                    border-top: 1px solid rgba(0, 240, 255, 0.15);
+                }
+
+                .feature-card {
+                    background: rgba(8, 14, 30, 0.05);
+                    border: 1px solid rgba(0, 240, 255, 0.15);
+                    border-radius: 1rem;
+                    padding: 2rem;
+                    backdrop-filter: blur(10px);
+                    text-align: center;
+                }
+
+                .feature-icon {
+                    width: 48px;
+                    height: 48px;
+                    margin: 0 auto 1rem;
+                    background: linear-gradient(135deg, #00F0FF 0%, #8B5CF6 100%);
+                    border-radius: 0.75rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.5rem;
+                }
+
+                .feature-card h3 {
+                    font-size: 1.1rem;
+                    margin-bottom: 0.5rem;
+                    color: #1a1a1a;
+                }
+
+                .feature-card p {
+                    color: #6B7280;
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                }
+
+                .dark .feature-card h3 {
+                    color: #EDEDEC;
+                }
+            </style>
+
+            <div class="hero-section">
+                <div class="hero-background">
+                    <div class="bg-glow bg-glow-cyan"></div>
+                    <div class="bg-glow bg-glow-violet"></div>
+                </div>
+
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Insure Your Life<br>Through Immersive Reality</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Experience India's first AR/VR-powered life insurance platform. Visualize your future, understand your coverage, and protect your family — all in immersive 3D.
+                    </p>
+
+                    <div class="hero-buttons">
+                        @auth
+                            <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+                        @else
+                            <a href="/login" class="btn btn-primary">Get Started</a>
+                            <a href="#features" class="btn btn-secondary">Learn More</a>
+                        @endauth
+                    </div>
+
+                    <div class="features" id="features">
+                        <div class="feature-card">
+                            <div class="feature-icon">👁️</div>
+                            <h3>AR/VR Experience</h3>
+                            <p>Immersive 3D visualization of your insurance plans and coverage details</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🛡️</div>
+                            <h3>Comprehensive Coverage</h3>
+                            <p>Protect your family with flexible and affordable life insurance plans</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Instant Claims</h3>
+                            <p>Quick and hassle-free claims processing with transparent tracking</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keep old structure but hidden -->
+        <div style="display:none;
                                         />
                                     </svg>
                                 </a>
@@ -270,8 +471,13 @@
             </main>
         </div>
 
+                </div>
+            </main>
+        </div>
+
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+        </div>
     </body>
 </html>

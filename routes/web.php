@@ -29,4 +29,23 @@ Route::get('/vr',function(){
     return view('vr');
 })->name('vr');
 Route::post('/purchase', [PolicyController::class, 'store']);
+Route::resource('plans', PlanController::class);
+
+// New Routes
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+Route::get('/claims', function () {
+    return view('claims');
+})->name('claims');
+
+Route::get('/policies', function () {
+    return view('plans');
+})->name('policies');
+
 require __DIR__.'/auth.php';

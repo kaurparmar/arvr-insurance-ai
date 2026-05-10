@@ -1,52 +1,113 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
-
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+    <div class="space-y-6 p-4">
+        <!-- Page Title -->
+        <div class="text-center pb-4 border-b" style="border-color: var(--cyan-dim);">
+            <h2 style="color: var(--cyan);" class="text-2xl font-bold tracking-tight">Create Your Account</h2>
+            <p style="color: var(--text-mid);" class="text-sm mt-2">Join LifeShield XR and protect your future</p>
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <!-- Validation Errors -->
+        @if ($errors->any())
+            <div style="background: var(--rose-dim); border: 1px solid var(--rose);" class="rounded-lg p-4">
+                <p style="color: var(--rose);" class="text-sm font-medium mb-2">{{ __('Validation Error') }}</p>
+                <ul style="color: var(--rose);" class="text-xs space-y-1 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <form method="POST" action="{{ route('register') }}" class="space-y-4">
+            @csrf
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+            <!-- Name -->
+            <div class="mb-4">
+                <label for="name" style="color: var(--text-hi);" class="block text-sm font-medium mb-2">{{ __('Full Name') }}</label>
+                <input id="name" 
+                    type="text" 
+                    name="name" 
+                    value="{{ old('name') }}" 
+                    required 
+                    autofocus 
+                    autocomplete="name"
+                    style="background: rgba(139,92,246,0.1); border: 1px solid var(--violet-dim); color: var(--text-hi);"
+                    class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+                @if ($errors->has('name'))
+                    <p style="color: var(--rose);" class="text-xs mt-2">{{ $errors->first('name') }}</p>
+                @endif
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <!-- Email Address -->
+            <div class="mb-4">
+                <label for="email" style="color: var(--text-hi);" class="block text-sm font-medium mb-2">{{ __('Email Address') }}</label>
+                <input id="email" 
+                    type="email" 
+                    name="email" 
+                    value="{{ old('email') }}" 
+                    required 
+                    autocomplete="username"
+                    style="background: rgba(139,92,246,0.1); border: 1px solid var(--violet-dim); color: var(--text-hi);"
+                    class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+                @if ($errors->has('email'))
+                    <p style="color: var(--rose);" class="text-xs mt-2">{{ $errors->first('email') }}</p>
+                @endif
+            </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <!-- Password -->
+            <div class="mb-4">
+                <label for="password" style="color: var(--text-hi);" class="block text-sm font-medium mb-2">{{ __('Password') }}</label>
+                <input id="password" 
+                    type="password" 
+                    name="password" 
+                    required 
+                    autocomplete="new-password"
+                    style="background: rgba(139,92,246,0.1); border: 1px solid var(--violet-dim); color: var(--text-hi);"
+                    class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+                @if ($errors->has('password'))
+                    <p style="color: var(--rose);" class="text-xs mt-2">{{ $errors->first('password') }}</p>
+                @endif
+            </div>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            <!-- Confirm Password -->
+            <div class="mb-4">
+                <label for="password_confirmation" style="color: var(--text-hi);" class="block text-sm font-medium mb-2">{{ __('Confirm Password') }}</label>
+                <input id="password_confirmation" 
+                    type="password" 
+                    name="password_confirmation" 
+                    required 
+                    autocomplete="new-password"
+                    style="background: rgba(139,92,246,0.1); border: 1px solid var(--violet-dim); color: var(--text-hi);"
+                    class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+                @if ($errors->has('password_confirmation'))
+                    <p style="color: var(--rose);" class="text-xs mt-2">{{ $errors->first('password_confirmation') }}</p>
+                @endif
+            </div>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+            <!-- Terms -->
+            <div class="flex items-start space-x-2">
+                <input type="checkbox" name="terms" id="terms" required style="accent-color: var(--cyan); margin-top: 6px;" class="mr-2" />
+                <label for="terms" style="color: var(--text-mid);" class="text-sm">
+                    {{ __('I agree to the Terms of Service and Privacy Policy') }}
+                </label>
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
+            <!-- Submit Button -->
+            <div class="pt-2 mb-2">
+                <button type="submit" 
+                    style="background: linear-gradient(135deg, var(--cyan), var(--emerald)); color: var(--bg-void);"
+                    class="w-full px-4 py-2 rounded-lg font-semibold hover:shadow-lg hover:shadow-cyan-400/30 transition duration-300">
+                    {{ __('Create Account') }}
+                </button>
+            </div>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
+            <!-- Login Link -->
+            <p style="color: var(--text-mid);" class="text-center text-sm">
+                {{ __('Already have an account?') }} 
+                <a href="{{ route('login') }}" style="color: var(--cyan);" class="font-medium hover:opacity-80 transition">
+                    {{ __('Sign in') }}
+                </a>
+            </p>
+        </form>
+    </div>
 </x-guest-layout>
