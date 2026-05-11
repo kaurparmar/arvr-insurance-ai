@@ -4,6 +4,7 @@ return [
     'Protect what matters' => 'Protect what matters ',
     'in a'=>'in a',
     'new dimension' => 'new dimension',
+    'hero_desc' => 'Experience insurance like never before with LifeShield XR. Our AR/VR-powered platform offers instant coverage, seamless claims, and personalized support—all without the hassle of paperwork.',
     'Browse Plans' => 'Browse Plans',
     'Launch AR Demo' => 'Launch AR Demo',
     'AVAILABLE PLANS' => 'AVAILABLE PLANS',

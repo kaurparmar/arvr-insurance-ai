@@ -392,7 +392,7 @@
             </div>
         </section>
 
-        {{-- ═══ TEAM ═══ --}}
+        <!-- {{-- ═══ TEAM ═══ --}}
         <section class="section">
             <div style="margin-bottom:56px">
                 <span class="xr-chip chip-cyan" style="margin-bottom:16px;display:inline-flex">
@@ -404,7 +404,7 @@
 
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px" class="team-grid">
                 @foreach([
-                    ['AK','Arjun Kapoor','Backend / Laravel','Handles MVC architecture, Eloquent ORM, database migrations, seeding, and REST API design.',['linear-gradient(135deg,#00F0FF,#8B5CF6)','#fff']],
+                    ['AK','Armin','Backend / Laravel','Handles MVC architecture, Eloquent ORM, database migrations, seeding, and REST API design.',['linear-gradient(135deg,#00F0FF,#8B5CF6)','#fff']],
                     ['PS','Priya Sharma','Frontend / Blade','Masters Blade templating, template inheritance, form validation, CSRF, sessions, and localization.',['linear-gradient(135deg,#FF3B6B,#8B5CF6)','#fff']],
                     ['RV','Rahul Verma','Full Stack / AR','AR/VR integration, email system, MongoDB setup, Query Builder, and deployment pipeline.',['linear-gradient(135deg,#FFB700,#FF3B6B)','#fff']],
                 ] as [$init,$name,$role,$desc,$av])
@@ -416,10 +416,10 @@
                 </div>
                 @endforeach
             </div>
-        </section>
+        </section> -->
 
         {{-- ═══ CURRICULUM ═══ --}}
-        <section class="section" style="padding-top:0">
+        <!-- <section class="section" style="padding-top:0">
             <span class="xr-chip chip-cyan" style="display:inline-flex;margin-bottom:20px">
                 <span class="chip-dot"></span> Laravel Curriculum
             </span>
@@ -442,7 +442,7 @@
                 </div>
                 @endforeach
             </div>
-        </section>
+        </section> -->
 
         {{-- ═══ JOURNEY / TIMELINE ═══ --}}
         <section class="section" style="padding-top:0">

@@ -126,18 +126,31 @@
         </div>
         <div class="feat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
             @foreach([
-                ['⚡', __('messages.Instant Coverage'), 'rgba(0,240,255,.08)', 'var(--cyan)'],
-                ['🥽', __('messages.AR/VR Experience'), 'rgba(139,92,246,.08)', 'var(--violet)'],
-                ['💰', __('messages.Flexible Premiums'), 'rgba(0,230,118,.08)', 'var(--emerald)'],
-                ['🕐', __('messages.24/7 Support'), 'rgba(255,183,0,.08)', 'var(--amber)'],
-                ['🔒', __('messages.Secure & Trusted'), 'rgba(255,59,107,.08)', 'var(--rose)'],
-                ['⚡', __('messages.Quick Claims'), 'rgba(0,240,255,.08)', 'var(--cyan)'],
-            ] as [$ic,$ti,$bg,$col])
+
+                ['⚡', __('messages.Instant Coverage') ,'rgba(0,240,255,.08)','Get immediate life insurance coverage with our streamlined digital process. No paperwork, no delays.','var(--cyan)'],
+
+                ['🥽', __('messages.AR/VR Experience') ,'rgba(139,92,246,.08)','Explore policies in 3D with our immersive augmented reality demonstrations and scenario simulations.','var(--violet)'],
+
+                ['💰', __('messages.Flexible Premiums') ,'rgba(0,230,118,.08)','Choose from various payment options that fit your budget and lifestyle needs perfectly.','var(--emerald)'],
+
+                ['🕐', __('messages.24/7 Support') ,'rgba(255,183,0,.08)','Round-the-clock customer support with AI-powered assistance and AR-guided help sessions.','var(--amber)'],
+
+                ['🔒', __('messages.Secure & Trusted') ,'rgba(255,59,107,.08)','Bank-grade security with blockchain-verified policy management and encrypted data storage.','var(--rose)'],
+
+                ['⚡', __('messages.Quick Claims') ,'rgba(0,240,255,.08)','Fast-track claim processing with AI-powered document verification settled in under 60 seconds.','var(--cyan)'],
+
+            ] as [$ic,$ti,$bg,$de,$col])
+
             <div class="feat-card">
+
                 <div class="feat-icon" style="background:{{ $bg }}">{{ $ic }}</div>
+
                 <h3 class="syne text-hi" style="font-size:17px;font-weight:600;margin-bottom:10px">{{ $ti }}</h3>
-                <p class="text-sub" style="font-size:13px;line-height:1.65">{{ __('messages.feature_desc_placeholder') }}</p>
+
+                <p class="text-sub" style="font-size:13px;line-height:1.65">{{ $de }}</p>
+
             </div>
+
             @endforeach
         </div>
     </section>
