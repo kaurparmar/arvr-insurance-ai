@@ -70,11 +70,11 @@
         {{-- Header --}}
         <div class="flex items-center justify-between mb-12">
             <div>
-                <span class="xr-chip mb-4"><span class="chip-dot"></span> Claim Details</span>
+                <span class="xr-chip mb-4"><span class="chip-dot"></span> {{ __('messages.Claim Details') }}</span>
                 <h1 class="syne text-hi text-4xl md:text-5xl font-extrabold tracking-tighter mb-2">
-                    Claim #{{ substr($claim->_id ?? $claim->id, -8) }}
+                    {{ __('messages.Claim') }} #{{ substr($claim->_id ?? $claim->id, -8) }}
                 </h1>
-                <p class="text-sub text-lg">Filed on {{ $claim->submitted_at->format('M j, Y') }}</p>
+                <p class="text-sub text-lg">{{ __('messages.Filed on') }} {{ $claim->submitted_at->format('M j, Y') }}</p>
             </div>
             <div class="status-badge status-{{ $claim->status }}">
                 <span>{{ $claim->getStatusIconAttribute() }}</span>
@@ -89,7 +89,7 @@
 
                 {{-- Policy Information --}}
                 <div class="xr-card p-6">
-                    <h3 class="syne text-hi text-xl font-bold mb-4">Policy Information</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-4">{{ __('messages.Policy Information') }}</h3>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <p class="text-xs font-bold uppercase tracking-widest text-sub mb-1">Policy Number</p>
@@ -114,7 +114,7 @@
 
                 {{-- Incident Details --}}
                 <div class="xr-card p-6">
-                    <h3 class="syne text-hi text-xl font-bold mb-4">Incident Details</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-4">{{ __('messages.Incident Details') }}</h3>
                     <div class="space-y-4">
                         <div class="grid md:grid-cols-2 gap-4">
                             <div>
@@ -142,7 +142,7 @@
                 {{-- Documents --}}
                 @if($claim->medical_reports || $claim->police_report || $claim->damage_photos || $claim->other_documents)
                 <div class="xr-card p-6">
-                    <h3 class="syne text-hi text-xl font-bold mb-4">Submitted Documents</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-4">{{ __('messages.Submitted Documents') }}</h3>
 
                     @if($claim->medical_reports)
                     <div class="mb-6">
@@ -204,7 +204,7 @@
 
                 {{-- Status Timeline --}}
                 <div class="xr-card p-6">
-                    <h3 class="syne text-hi text-xl font-bold mb-4">Claim Timeline</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-4">{{ __('messages.Claim Timeline') }}</h3>
                     <div class="timeline">
                         <div class="timeline-item">
                             <div class="timeline-content">
@@ -231,14 +231,14 @@
 
                 {{-- Quick Actions --}}
                 <div class="xr-card p-6">
-                    <h3 class="syne text-hi text-xl font-bold mb-4">Quick Actions</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-4">{{ __('messages.Quick Actions') }}</h3>
                     <div class="space-y-3">
                         <a href="{{ route('claims') }}" class="block w-full text-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-hi px-4 py-3 rounded-lg transition-colors">
-                            ← Back to Claims
+                            ← {{ __('messages.Back to Claims') }}
                         </a>
                         @if($claim->status === 'pending')
                         <button onclick="printClaim()" class="block w-full text-center bg-cyan-500 hover:bg-cyan-600 text-cyan-900 dark:text-cyan-950 px-4 py-3 rounded-lg transition-colors font-semibold">
-                            📄 Print Claim
+                            📄 {{ __('messages.Print Claim') }}
                         </button>
                         @endif
                     </div>
@@ -246,7 +246,7 @@
 
                 {{-- Contact Support --}}
                 <div class="xr-card p-6">
-                    <h3 class="syne text-hi text-xl font-bold mb-4">Need Help?</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-4">{{ __('messages.Need Help?') }}</h3>
                     <p class="text-sub text-sm mb-4">Contact our claims support team for assistance with your claim.</p>
                     <div class="space-y-2">
                         <a href="mailto:claims@liveshieldxr.com" class="block text-cyan-500 hover:text-cyan-400 text-sm">

@@ -85,12 +85,12 @@
 
         {{-- Header --}}
         <div class="fade-up d1" style="text-align:center;margin-bottom:56px">
-            <span class="xr-chip"><span class="chip-dot"></span> Insurance Plans</span>
+            <span class="xr-chip"><span class="chip-dot"></span> {{ __('messages.Insurance Plans') }}</span>
             <h1 class="syne text-hi" style="font-size:clamp(36px,5vw,64px);font-weight:800;letter-spacing:-2px;margin:20px 0 16px">
-                Choose Your <span style="color:var(--cyan)">Protection</span>
+                {{ __('messages.Choose Your') }} <span style="color:var(--cyan)">{{ __('messages.Protection') }}</span>
             </h1>
             <p class="text-sub" style="font-size:17px;max-width:520px;margin:0 auto;line-height:1.7">
-                All plans include AR-powered onboarding, instant issuance, and VR-based claims processing. No paperwork.
+                {{ __('messages.All plans include AR-powered onboarding, instant issuance, and VR-based claims processing. No paperwork.') }}
             </p>
         </div>
 
@@ -137,7 +137,7 @@
                 </div>
 
                 <a href="@if(auth()->check()){{ route('plans.show', $plan) }}@else{{   route('login') }}@endif" class="btn-plan {{ $featured ? 'primary' : 'outline' }}">
-                    {{ $featured ? 'Select Plan →' : 'View Details →' }}
+                    {{ $featured ? __('messages.Select Plan →') : __('messages.View Details →') }}
                 </a>
             </div>
             @empty

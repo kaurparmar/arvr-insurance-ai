@@ -85,26 +85,26 @@
 
         {{-- Header --}}
         <div class="text-center mb-16">
-            <span class="xr-chip mb-4"><span class="chip-dot"></span> Claims Processing</span>
-            <h1 class="syne text-hi text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">File Insurance Claim</h1>
-            <p class="text-sub text-lg">Submit your claim with all necessary documentation for quick processing.</p>
+            <span class="xr-chip mb-4"><span class="chip-dot"></span> {{ __('messages.Claims Processing') }}</span>
+            <h1 class="syne text-hi text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">{{ __('messages.File Insurance Claim') }}</h1>
+            <p class="text-sub text-lg">{{ __('messages.Submit your claim with all necessary documentation for quick processing.') }}</p>
         </div>
 
         {{-- Progress Steps --}}
         <div class="flex justify-center mb-12">
             <div class="step active">
                 <div class="step-circle">1</div>
-                <span class="text-hi font-semibold">Claim Details</span>
+                <span class="text-hi font-semibold">{{ __('messages.Claim Details') }}</span>
             </div>
             <div class="step-line"></div>
             <div class="step pending">
                 <div class="step-circle">2</div>
-                <span class="text-sub">Document Upload</span>
+                <span class="text-sub">{{ __('messages.Document Upload') }}</span>
             </div>
             <div class="step-line"></div>
             <div class="step pending">
                 <div class="step-circle">3</div>
-                <span class="text-sub">Review & Submit</span>
+                <span class="text-sub">{{ __('messages.Review & Submit') }}</span>
             </div>
         </div>
 
@@ -212,10 +212,10 @@
                 {{-- Submit Button --}}
                 <div class="pt-6 border-t border-slate-200 dark:border-slate-700">
                     <button type="submit" class="btn-xr w-full syne text-sm uppercase tracking-wider">
-                        Submit Claim for Processing
+                        {{ __('messages.Submit Claim for Processing') }}
                     </button>
                     <p class="text-xs text-sub text-center mt-4">
-                        By submitting this claim, you confirm that all information provided is accurate and complete.
+                        {{ __('messages.By submitting this claim, you confirm that all information provided is accurate and complete.') }}
                     </p>
                 </div>
             </form>

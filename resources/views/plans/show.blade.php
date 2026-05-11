@@ -193,7 +193,7 @@
             @if(!$existingApplication)
                 {{-- Case 1: New User / No Application --}}
                 <a href="{{ route('policies.apply', $plan->_id ?? $plan->id) }}" class="btn-xr">
-                    Apply for Coverage ⚡
+                    {{ __('messages.Apply for Coverage ⚡') }}
                 </a>
             @elseif($existingApplication->status === 'pending')
                 {{-- Case 2: Waiting for Admin Approval --}}
@@ -207,30 +207,30 @@
                 </div>
             @elseif($existingApplication->status === 'approved')
                 {{-- Case 3: Approved - Proceed to Payment --}}
-                <a href="{{ route('policies.payment', $existingApplication->id) }}" class="btn-xr bg-emerald-500 hover:shadow-emerald-500/40">
-                    Initialize Payment 💳
+                <a href="{{ route('transactions.create', $existingApplication->id) }}" class="btn-xr bg-emerald-500 hover:shadow-emerald-500/40">
+                    {{ __('messages.Initialize Payment 💳') }}
                 </a>
                 <p class="text-center text-[10px] text-emerald-500 font-bold mt-4 uppercase tracking-widest">
-                    Status: Authorization Granted
+                    {{ __('messages.Status: Authorization Granted') }}
                 </p>
             @elseif($existingApplication->status === 'active')
                 {{-- Case 4: Already Active --}}
                 <div class="btn-xr bg-slate-800 cursor-default opacity-80 text-slate-400">
-                    Protocol Active ✅
+                    {{ __('messages.Protocol Active ✅') }}
                 </div>
             @endif
         @else
-            <a href="{{ route('login') }}" class="btn-xr">Initialize Link</a>
+            <a href="{{ route('login') }}" class="btn-xr">{{ __('messages.Initialize Link') }}</a>
         @endauth
     </div>
 </div>
 
                     {{-- Helper Card --}}
                     <div class="xr-card p-8 border-l-4 border-l-cyan-500">
-                        <h4 class="syne text-hi font-bold text-xl mb-4">Neural Support</h4>
-                        <p class="text-sub text-sm leading-relaxed mb-8">Our AI-assisted agents are standing by to clarify coverage synchronization or onboarding errors.</p>
+                        <h4 class="syne text-hi font-bold text-xl mb-4">{{ __('messages.Neural Support') }}</h4>
+                        <p class="text-sub text-sm leading-relaxed mb-8">{{ __('messages.Our AI-assisted agents are standing by to clarify coverage synchronization or onboarding errors.') }}</p>
                         <a href="{{ route('contact') }}" class="group flex items-center gap-3 font-black text-xs uppercase tracking-[0.2em] text-hi">
-                            Request Uplink 
+                            {{ __('messages.Request Uplink') }} 
                             <span class="group-hover:translate-x-2 transition-transform text-cyan-500">——→</span>
                         </a>
                     </div>
@@ -239,7 +239,7 @@
                     <div class="p-6 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
                         <div class="flex items-center gap-3 text-[10px] font-bold text-sub uppercase tracking-widest">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
-                            All Systems Operational
+                            {{ __('messages.All Systems Operational') }}
                         </div>
                     </div>
                 </aside>

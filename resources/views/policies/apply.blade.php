@@ -81,26 +81,26 @@
 
         {{-- Header --}}
         <div class="text-center mb-16">
-            <span class="xr-chip mb-4"><span class="chip-dot"></span> Policy Application</span>
+            <span class="xr-chip mb-4"><span class="chip-dot"></span> {{ __('messages.Policy Application') }}</span>
             <h1 class="syne text-hi text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">{{ $plan->name }}</h1>
-            <p class="text-sub text-lg">Complete your application with all required documents for instant processing.</p>
+            <p class="text-sub text-lg">{{ __('messages.Complete your application with all required documents for instant processing.') }}</p>
         </div>
 
         {{-- Progress Steps --}}
         <div class="flex justify-center mb-12">
             <div class="step active">
                 <div class="step-circle">1</div>
-                <span class="text-hi font-semibold">Personal Details</span>
+                <span class="text-hi font-semibold">{{ __('messages.Personal Details') }}</span>
             </div>
             <div class="step-line"></div>
             <div class="step pending">
                 <div class="step-circle">2</div>
-                <span class="text-sub">Document Upload</span>
+                <span class="text-sub">{{ __('messages.Document Upload') }}</span>
             </div>
             <div class="step-line"></div>
             <div class="step pending">
                 <div class="step-circle">3</div>
-                <span class="text-sub">Review & Submit</span>
+                <span class="text-sub">{{ __('messages.Review & Submit') }}</span>
             </div>
         </div>
 
@@ -125,7 +125,7 @@
 
                 {{-- Personal Information --}}
                 <div>
-                    <h3 class="syne text-hi text-xl font-bold mb-6">Personal Information</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-6">{{ __('messages.Personal Information') }}</h3>
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-widest text-sub mb-3">Full Name</label>
@@ -169,7 +169,7 @@
 
                 {{-- Emergency Contact --}}
                 <div>
-                    <h3 class="syne text-hi text-xl font-bold mb-6">Emergency Contact</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-6">{{ __('messages.Emergency Contact') }}</h3>
                     <div class="grid md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-widest text-sub mb-3">Contact Name</label>
@@ -188,7 +188,7 @@
 
                 {{-- Document Uploads --}}
                 <div>
-                    <h3 class="syne text-hi text-xl font-bold mb-6">Required Documents</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-6">{{ __('messages.Required Documents') }}</h3>
                     <div class="grid md:grid-cols-2 gap-6">
 
                         {{-- Photo ID --}}

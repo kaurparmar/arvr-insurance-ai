@@ -77,9 +77,9 @@
 
         {{-- Header --}}
         <div class="text-center mb-16">
-            <span class="xr-chip mb-4"><span class="chip-dot"></span> Payment Processing</span>
-            <h1 class="syne text-hi text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">Complete Your Payment</h1>
-            <p class="text-sub text-lg">Secure payment processing for your LifeShield XR policy.</p>
+            <span class="xr-chip mb-4"><span class="chip-dot"></span> {{ __('messages.Payment Processing') }}</span>
+            <h1 class="syne text-hi text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">{{ __('messages.Complete Your Payment') }}</h1>
+            <p class="text-sub text-lg">{{ __('messages.Secure payment processing for your LifeShield XR policy.') }}</p>
         </div>
 
         {{-- Progress Steps --}}
@@ -109,7 +109,7 @@
 
                     {{-- Payment Method Selection --}}
                     <div class="mb-8">
-                        <h3 class="syne text-hi text-xl font-bold mb-6">Select Payment Method</h3>
+                        <h3 class="syne text-hi text-xl font-bold mb-6">{{ __('messages.Select Payment Method') }}</h3>
                         <div class="grid grid-cols-2 gap-4 mb-6">
                             <div class="payment-method selected" data-method="credit_card">
                                 <div class="text-3xl mb-2">💳</div>
@@ -196,7 +196,7 @@
                     {{-- Submit Button --}}
                     <div class="pt-6 border-t border-slate-200 dark:border-slate-700">
                         <button type="submit" class="btn-xr w-full syne text-sm uppercase tracking-wider" id="payButton">
-                            Process Payment ₹{{ number_format($policy->premium_paid) }}
+                            {{ __('messages.Process Payment') }} ₹{{ number_format($policy->premium_paid) }}
                         </button>
                         <p class="text-xs text-sub text-center mt-4">
                             Your payment is secured with 256-bit SSL encryption.
@@ -208,7 +208,7 @@
             {{-- Order Summary --}}
             <div class="space-y-6">
                 <div class="xr-card p-6">
-                    <h3 class="syne text-hi text-xl font-bold mb-6">Order Summary</h3>
+                    <h3 class="syne text-hi text-xl font-bold mb-6">{{ __('messages.Order Summary') }}</h3>
                     <div class="space-y-4">
                         <div class="flex justify-between">
                             <span class="text-sub">Policy:</span>
@@ -233,7 +233,7 @@
 
                 {{-- Security Info --}}
                 <div class="xr-card p-6">
-                    <h4 class="syne text-hi text-lg font-bold mb-4">🔒 Secure Payment</h4>
+                    <h4 class="syne text-hi text-lg font-bold mb-4">🔒 {{ __('messages.Secure Payment') }}</h4>
                     <ul class="text-sm text-sub space-y-2">
                         <li>• 256-bit SSL encryption</li>
                         <li>• PCI DSS compliant</li>

@@ -1,59 +1,177 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+﻿# ARVR Insurance
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel 12 insurance portal built with MongoDB, multi-language localization, and a VR-themed frontend experience.
 
-## About Laravel
+## Project Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+ARVR Insurance is a MongoDB-backed Laravel application that delivers:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Authentication and user profile management
+- Insurance plan browsing and detailed plan pages
+- Policy application and approval workflows
+- Claims filing and claim status tracking
+- Transaction checkout for policy payments
+- Localization for English, Hindi, and Punjabi
+- A VR-style demo page at /vr
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Functional Areas
 
-## Learning Laravel
+### User Authentication
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- Login and logout
+- Registration
+- Email verification
+- Password reset and confirmation
+- Profile edit and account management
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Insurance and Policy Workflows
 
-## Laravel Sponsors
+- Browse available plans on /plans
+- View plan details on /plans/{plan}
+- Apply for a policy on /policies/apply/{plan}
+- Confirm policy application success
+- Pay for approved policies on /transactions/{policy}/create
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Claims Management
 
-### Premium Partners
+- View existing claims on /claims
+- Submit a new claim on /claims/create
+- Inspect claim details on /claims/{id}
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### VR Experience
 
-## Contributing
+- Explore the VR-themed frontend at /vr
+- The page uses the same localization system as other pages
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Localization
 
-## Code of Conduct
+Localization is implemented in:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- resources/lang/en/messages.php
+- resources/lang/hi/messages.php
+- resources/lang/pa/messages.php
 
-## Security Vulnerabilities
+Blade templates use the __() helper to render translated text.
+Main localized content includes:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- page headings
+- button labels
+- section titles
+- workflow step labels
+- status and summary text
+
+Locale switching is supported by /lang/{locale}.
+
+## Architecture and Data Flow
+
+### High-level flow
+
+1. A browser requests a route such as /plans, /claims, or /policies/apply/{plan}.
+2. Laravel routes in routes/web.php and routes/auth.php forward the request to controllers.
+3. Controllers load models backed by MongoDB.
+4. Blade templates render the page with translated copy.
+5. User form submissions are handled by controllers and saved to MongoDB.
+
+### Data flow diagram
+
+[Browser] --> [Laravel Route] --> [Controller] --> [MongoDB Model]
+      ^                                       |
+      |                                       v
+      +--------------- [Blade View] <---------+
+
+### Example sequence for plan application
+
+- User opens /plans
+- Controller retrieves plan data
+- User clicks apply and reaches /policies/apply/{plan}
+- The application form is displayed with localized text
+- On submit, a new policy is saved and the user is redirected to success or payment
+
+## Installation
+
+1. Clone the repository:
+
+git clone <repository-url>
+cd arvr-insurance
+
+2. Install PHP dependencies:
+
+composer install
+
+3. Install Node dependencies:
+
+npm install
+
+4. Copy the environment file:
+
+cp .env.example .env
+
+5. Generate the application key:
+
+php artisan key:generate
+
+6. Configure MongoDB in .env:
+
+DB_CONNECTION=mongodb
+MONGODB_URI="your-mongodb-uri"
+MONGODB_DATABASE=your_database_name
+
+7. Start the development server:
+
+php artisan serve
+
+## Local Development Commands
+
+- php artisan serve to start the app server
+- npm run dev to compile frontend assets in development mode
+- npm run build to compile production assets
+- php artisan view:clear to clear compiled views
+- php artisan config:clear to clear cached configuration
+
+## Testing
+
+Run tests with:
+
+php artisan test
+
+### Test environment details
+
+- The application uses MongoDB in .env
+- phpunit.xml should set DB_CONNECTION=mongodb
+- MONGODB_DATABASE should be arvr-insurance_test for tests
+
+### If tests fail with SQLite errors
+
+If you see the error:
+
+Illuminate\Database\SQLiteConnection::getCollection does not exist
+
+then the test runtime is still using SQLite instead of MongoDB.
+
+Verify phpunit.xml or env.testing is configured for MongoDB.
+
+## Important GitHub Notes
+
+- Do not commit .env
+- Commit composer.lock and package-lock.json
+- Ensure vendor/, node_modules/, and public/build are excluded by .gitignore
+- Document MongoDB setup clearly for reviewers
+- Keep phpunit.xml as the canonical test configuration
+
+## Useful Routes
+
+- / home page
+- /about about page
+- /calculator calculator page
+- /claims claims dashboard
+- /claims/create submit a claim
+- /plans insurance plans
+- /plans/{plan} plan detail page
+- /policies/apply/{plan} policy application
+- /transactions/{policy}/create payment checkout
+- /lang/{locale} switch language
+- /vr VR demo page
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License.

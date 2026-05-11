@@ -63,16 +63,16 @@
         
         {{-- Header --}}
         <div class="text-center mb-16">
-            <span class="xr-chip mb-4"><span class="chip-dot"></span> Claims Portal</span>
-            <h1 class="syne text-hi text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">Easy Claims Process</h1>
-            <p class="text-sub text-lg">File and track your insurance claims with complete transparency.</p>
+            <span class="xr-chip mb-4"><span class="chip-dot"></span> {{ __('messages.Claims Portal') }}</span>
+            <h1 class="syne text-hi text-5xl md:text-6xl font-extrabold tracking-tighter mb-4">{{ __('messages.Easy Claims Process') }}</h1>
+            <p class="text-sub text-lg">{{ __('messages.File and track your insurance claims with complete transparency.') }}</p>
         </div>
 
         @auth
             {{-- Action Buttons --}}
             <div class="flex justify-center mb-12">
                 <a href="{{ route('claims.create') }}" class="btn-xr px-12 py-4 syne text-lg uppercase tracking-wider">
-                    🚀 File New Claim
+                    🚀 {{ __('messages.File New Claim') }}
                 </a>
             </div>
 
@@ -80,7 +80,7 @@
 
                 {{-- Claims List --}}
                 <div class="xr-card p-8">
-                    <h2 class="syne text-hi text-2xl font-bold mb-8">Your Claims History</h2>
+                    <h2 class="syne text-hi text-2xl font-bold mb-8">{{ __('messages.Your Claims History') }}</h2>
                     <div class="space-y-4">
                         @forelse($claims as $claim)
                             <a href="{{ route('claims.show', $claim->_id ?? $claim->id) }}" class="block p-5 rounded-2xl border dark:border-white/5 border-slate-100 bg-white/5 transition hover:border-cyan/30 hover:bg-cyan/5">
@@ -107,9 +107,9 @@
                         @empty
                             <div class="py-12 text-center">
                                 <div class="text-4xl mb-4">📡</div>
-                                <p class="text-sub text-sm mb-4">No claims found in your records.</p>
+                                <p class="text-sub text-sm mb-4">{{ __('messages.No claims found in your records.') }}</p>
                                 <a href="{{ route('claims.create') }}" class="text-cyan-500 hover:text-cyan-400 text-sm underline">
-                                    File your first claim →
+                                    {{ __('messages.File your first claim →') }}
                                 </a>
                             </div>
                         @endforelse
@@ -119,7 +119,7 @@
                 {{-- Quick Stats --}}
                 <div class="space-y-6">
                     <div class="xr-card p-8">
-                        <h2 class="syne text-hi text-2xl font-bold mb-6">Claims Overview</h2>
+                        <h2 class="syne text-hi text-2xl font-bold mb-6">{{ __('messages.Claims Overview') }}</h2>
                         <div class="grid grid-cols-2 gap-4">
                             <div class="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
                                 <div class="text-2xl font-bold text-hi mb-1">{{ $claims->count() }}</div>
@@ -161,18 +161,18 @@
         @else
             {{-- Guest State --}}
             <div class="xr-card p-16 text-center max-w-2xl mx-auto mb-20">
-                <h2 class="syne text-hi text-3xl font-bold mb-4">Access Restricted</h2>
-                <p class="text-sub mb-10">Neural link required. Please sign in to access the LifeShield XR claims database.</p>
-                <a href="{{ route('login') }}" class="btn-xr px-10">Authenticate Identity</a>
+                <h2 class="syne text-hi text-3xl font-bold mb-4">{{ __('messages.Access Restricted') }}</h2>
+                <p class="text-sub mb-10">{{ __('messages.Neural link required. Please sign in to access the LifeShield XR claims database.') }}</p>
+                <a href="{{ route('login') }}" class="btn-xr px-10">{{ __('messages.Authenticate Identity') }}</a>
             </div>
         @endauth
 
         {{-- Footer Steps --}}
         <div class="grid md:grid-cols-3 gap-8">
             @foreach([
-                ['01', 'Submit Data', 'var(--cyan)'],
-                ['02', 'Neural Review', 'var(--violet)'],
-                ['03', 'Instant Payout', 'var(--emerald)']
+                ['01', __('messages.Submit Data'), 'var(--cyan)'],
+                ['02', __('messages.Neural Review'), 'var(--violet)'],
+                ['03', __('messages.Instant Payout'), 'var(--emerald)']
             ] as [$num, $title, $color])
             <div class="xr-card p-8 group">
                 <div class="syne text-4xl font-black mb-4 opacity-20 group-hover:opacity-100 transition-opacity" style="color:{{ $color }}">{{ $num }}</div>
