@@ -1,51 +1,44 @@
 <?php
 
+use App\Http\Controllers\CalculatorController;
+use App\Http\Controllers\ClaimController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\CalculatorController;
-use App\Http\Controllers\PolicyController;
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [PageController::class, 'welcome'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/vr', function () {
+    return view('vr');
+})->name('vr');
+Route::get('/calculator', function () {
+    return view('calculator');
+})->name('calculator');
+Route::post('/calculate', [CalculatorController::class, 'calculate'])->name('calculate');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        $policies = auth()->user()->policies()->with('plan')->get();
+        $activePoliciesCount = $policies->where('status', 'active')->count();
+        $coverageTotal = $policies->sum(fn ($policy) => $policy->plan?->coverage_amount ?? 0);
+        $monthlyPremiumTotal = $policies->sum('premium_paid');
+
+        return view('dashboard', compact('policies', 'activePoliciesCount', 'coverageTotal', 'monthlyPremiumTotal'));
+    })->name('dashboard');
+
+    Route::get('/policies', [PolicyController::class, 'index'])->name('policies.index');
+    Route::get('/claims', [ClaimController::class, 'index'])->name('claims');
+    Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
+    Route::post('/purchase', [PolicyController::class, 'store'])->name('purchase.store');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::get('/plans', [PlanController::class, 'index']);
-Route::get('/plans/{id}', [PlanController::class, 'show']);
 
-Route::get('/calculator', function () {
-    return view('calculator');
-});
-Route::post('/calculate', [CalculatorController::class, 'calculate']);
-Route::get('/vr',function(){
-    return view('vr');
-})->name('vr');
-Route::post('/purchase', [PolicyController::class, 'store']);
-Route::resource('plans', PlanController::class);
-
-// New Routes
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
-
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
-
-Route::get('/claims', function () {
-    return view('claims');
-})->name('claims');
-
-Route::get('/policies', function () {
-    return view('plans');
-})->name('policies');
+Route::resource('plans', PlanController::class)->only(['index', 'show']);
 
 require __DIR__.'/auth.php';

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Claim;
+use App\Models\Policy;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
@@ -26,9 +28,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone',
-        'address',
-        'role',
+        // 'phone',
+        // 'address',
+        // 'role',
     ];
 
     /**
@@ -52,5 +54,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function policies()
+    {
+        return $this->hasMany(Policy::class);
+    }
+
+    public function claims()
+    {
+        return $this->hasMany(Claim::class);
     }
 }
