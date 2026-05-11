@@ -497,6 +497,68 @@
         transition: all 0.2s; font-family: 'DM Sans', sans-serif;
     }
     .xr-mob-logout-btn:hover { background: rgba(255,59,107,0.15); border-color: rgba(255,59,107,0.4); }
+
+
+    /* The custom wrapper for the select */
+    .cyber-lang-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 10px 16px;
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        border-radius: 4px;
+        margin: 5px 12px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .cyber-lang-wrapper:hover {
+        border-color: #00F0FF;
+        background: rgba(0, 240, 255, 0.1);
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+
+    /* Icon styling */
+    .lang-icon {
+        margin-right: 12px;
+        font-size: 1.1rem;
+        filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.5));
+    }
+
+    /* The actual Select - Hidden but functional */
+    .cyber-select {
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        border: none;
+        color: #00F0FF;
+        font-family: 'Rajdhani', sans-serif; /* Or your theme font */
+        font-weight: 600;
+        font-size: 0.9rem;
+        width: 100%;
+        cursor: pointer;
+        outline: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Custom Arrow */
+    .cyber-lang-wrapper::after {
+        content: '▼';
+        font-size: 0.7rem;
+        color: #00F0FF;
+        position: absolute;
+        right: 15px;
+        pointer-events: none;
+    }
+
+    /* Option styling (limited browser support, but keeps theme dark) */
+    .cyber-select option {
+        background: #0a0a0f;
+        color: #ffffff;
+        padding: 10px;
+    }
 </style>
 
 <div x-data="{
@@ -551,10 +613,10 @@ x-init="
             <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
 
                 <!-- Live badge (desktop) -->
-                <div class="xr-live-badge hidden md:inline-flex">
+                <!-- <div class="xr-live-badge hidden md:inline-flex">
                     <div class="xr-live-dot"></div>
                     XR Live
-                </div>
+                </div> -->
 
                 <!-- Theme toggle -->
                 <button @click="toggleTheme()" class="xr-theme-btn" type="button" :title="darkMode ? 'Light mode' : 'Dark mode'">
@@ -593,7 +655,26 @@ x-init="
                             <a href="{{ route('profile.edit') }}" class="xr-dd-link">
                                 <span class="dd-icon">◎</span> Profile
                             </a>
-                            <div class="xr-dd-divider"></div>
+<div class="xr-dd-divider"></div>
+
+<!-- Integrated Language Switcher -->
+<div class="xr-dd-link" style="position: relative; cursor: default;">
+   
+    <div class="cyber-lang-wrapper">
+    <span class="lang-icon text-sm">Select Language</span>
+    <select class="cyber-select" onchange="window.location.href=this.value">
+        <option value="" disabled {{ !session()->has('locale') ? 'selected' : '' }}>Region Select</option>
+        <option value="/lang/en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN - English</option>
+        <option value="/lang/pa" {{ app()->getLocale() == 'pa' ? 'selected' : '' }}>PA - ਪੰਜਾਬੀ</option>
+        <option value="/lang/hi" {{ app()->getLocale() == 'hi' ? 'selected' : '' }}>HI - हिन्दी</option>
+    </select>
+</div>
+    <span style="font-size: 10px; color: #00F0FF; font-weight: 700; text-transform: uppercase;">
+        {{ strtoupper(app()->getLocale()) }}
+    </span>
+</div>
+
+<div class="xr-dd-divider"></div>
                             <form action="{{ route('logout') }}" method="POST" style="margin:0">
                                 @csrf
                                 <button type="submit" class="xr-dd-logout">

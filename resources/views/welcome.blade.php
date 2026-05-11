@@ -80,30 +80,30 @@
     {{-- ═══ HERO ═══ --}}
     <section class="hero">
         <div class="glow" style="width:700px;height:700px;top:-200px;left:-200px;background:rgba(0,240,255,.06)"></div>
-        <div class="glow" style="width:600px;height:600px;bottom:-100px;right:-150px;background:rgba(139,92,246,.06)"></div>
-        <div class="glow" style="width:400px;height:400px;top:30%;left:50%;transform:translateX(-50%);background:rgba(255,59,107,.04)"></div>
-
+        
+       
         <div style="max-width:860px;position:relative;z-index:10">
-            <div class="fade-up d1" style="margin-bottom:28px">
-                <span class="xr-chip chip-live"><span class="chip-dot"></span> Immersive XR Insurance</span>
-            </div>
             <h1 class="syne fade-up d2" style="font-size:clamp(44px,7vw,88px);font-weight:800;letter-spacing:-3px;line-height:1.0;margin-bottom:24px">
-                Protect what matters<br>in a <span class="grad-cv">new dimension.</span>
+                {{ __('messages.Protect what matters') }}<br> 
+                {{ __('messages.in a') }} <span class="grad-cv"> {{ __('messages.new dimension') }} </span>
             </h1>
+            
             <p class="fade-up d3 text-sub" style="font-size:clamp(16px,2vw,20px);max-width:580px;margin:0 auto 48px;line-height:1.7;font-weight:300">
-                LifeShield XR combines cinematic visuals, instant plan insights, and reliable policy protection so your family stays secure in every reality.
+                {{-- Add this key to your lang files too --}}
+                {{ __('messages.hero_desc') }} 
             </p>
+
             <div class="fade-up d4" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:72px">
-                <a href="{{ route('plans.index') }}" class="btn-hero-primary">Browse Plans →</a>
-                <a href="{{ route('vr') }}" class="btn-hero-outline">🥽 Launch AR Demo</a>
+                <a href="{{ route('plans.index') }}" class="btn-hero-primary">{{ __('messages.Browse Plans') }} →</a>
+                <a href="{{ route('vr') }}" class="btn-hero-outline">🥽 {{ __('messages.Launch AR Demo') }}</a>
             </div>
 
             {{-- Live stats --}}
             <div class="hero-stats fade-up d5" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
                 @foreach([
-                    [number_format($planCount),'Available Plans','Tailored solutions from the database.','var(--cyan)'],
-                    [number_format($policyCount),'Active Policies','Trusted coverage across customers.','var(--violet)'],
-                    [number_format($activeUsers),'Members','Real families protected today.','var(--emerald)'],
+                    [number_format($planCount), __('messages.AVAILABLE PLANS'), 'Tailored solutions from the database.', 'var(--cyan)'],
+                    [number_format($policyCount), __('messages.ACTIVE POLICIES'), 'Trusted coverage across customers.', 'var(--violet)'],
+                    [number_format($activeUsers), __('messages.MEMBERS'), 'Real families protected today.', 'var(--emerald)'],
                 ] as [$num,$lbl,$desc,$col])
                 <div class="hero-stat">
                     <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-bottom:8px" class="text-sub">{{ $lbl }}</div>
@@ -120,27 +120,32 @@
     {{-- ═══ WHY LIFESHIELD ═══ --}}
     <section class="section">
         <div style="text-align:center;margin-bottom:56px">
-            <span class="xr-chip chip-live"><span class="chip-dot"></span> Features</span>
-            <h2 class="syne text-hi" style="font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-1.5px;margin-top:20px;margin-bottom:12px">Why Choose LifeShield XR?</h2>
-            <p class="text-sub" style="font-size:16px;max-width:500px;margin:0 auto;line-height:1.65">Experience insurance like never before — immersive, instant, and intelligent.</p>
+            <h2 class="syne text-hi" style="font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-1.5px;margin-top:20px;margin-bottom:12px">
+                {{ __('messages.Why Choose LifeShield XR?') }}
+            </h2>
         </div>
         <div class="feat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
             @foreach([
-                ['⚡','Instant Coverage','rgba(0,240,255,.08)','Get immediate life insurance coverage with our streamlined digital process. No paperwork, no delays.','var(--cyan)'],
-                ['🥽','AR/VR Experience','rgba(139,92,246,.08)','Explore policies in 3D with our immersive augmented reality demonstrations and scenario simulations.','var(--violet)'],
-                ['💰','Flexible Premiums','rgba(0,230,118,.08)','Choose from various payment options that fit your budget and lifestyle needs perfectly.','var(--emerald)'],
-                ['🕐','24/7 AI Support','rgba(255,183,0,.08)','Round-the-clock customer support with AI-powered assistance and AR-guided help sessions.','var(--amber)'],
-                ['🔒','Secure & Trusted','rgba(255,59,107,.08)','Bank-grade security with blockchain-verified policy management and encrypted data storage.','var(--rose)'],
-                ['⚡','Quick Claims','rgba(0,240,255,.08)','Fast-track claim processing with AI-powered document verification settled in under 60 seconds.','var(--cyan)'],
-            ] as [$ic,$ti,$bg,$de,$col])
+                ['⚡', __('messages.Instant Coverage'), 'rgba(0,240,255,.08)', 'var(--cyan)'],
+                ['🥽', __('messages.AR/VR Experience'), 'rgba(139,92,246,.08)', 'var(--violet)'],
+                ['💰', __('messages.Flexible Premiums'), 'rgba(0,230,118,.08)', 'var(--emerald)'],
+                ['🕐', __('messages.24/7 Support'), 'rgba(255,183,0,.08)', 'var(--amber)'],
+                ['🔒', __('messages.Secure & Trusted'), 'rgba(255,59,107,.08)', 'var(--rose)'],
+                ['⚡', __('messages.Quick Claims'), 'rgba(0,240,255,.08)', 'var(--cyan)'],
+            ] as [$ic,$ti,$bg,$col])
             <div class="feat-card">
                 <div class="feat-icon" style="background:{{ $bg }}">{{ $ic }}</div>
                 <h3 class="syne text-hi" style="font-size:17px;font-weight:600;margin-bottom:10px">{{ $ti }}</h3>
-                <p class="text-sub" style="font-size:13px;line-height:1.65">{{ $de }}</p>
+                <p class="text-sub" style="font-size:13px;line-height:1.65">{{ __('messages.feature_desc_placeholder') }}</p>
             </div>
             @endforeach
         </div>
     </section>
+
+    <div class="xr-divider"></div>
+
+    {{-- ═══ WHY LIFESHIELD ═══ --}}
+ 
 
     <div class="xr-divider"></div>
 

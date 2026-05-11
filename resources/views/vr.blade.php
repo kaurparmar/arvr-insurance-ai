@@ -714,20 +714,22 @@
                     <span class="cta-emoji">📋</span>
                     <div class="cta-title">View Plans</div>
                     <div class="cta-desc">Explore all coverage options — from Starter Shield to Wealth Guardian. AR-powered comparison included.</div>
-                    <button class="cta-btn cta-btn-cyan" onclick="window.location.href='{{ route('vr') }}'">Explore Plans →</button>
+                    <button class="cta-btn cta-btn-cyan" onclick="window.location.href='{{ route('plans.index') }}'">Explore Plans →</button>
                 </div>
                 <div class="cta-card">
                     <span class="cta-emoji">🧮</span>
                     <div class="cta-title">Calculate Premium</div>
                     <div class="cta-desc">Enter your age, income, and lifestyle. Get an instant premium quote powered by AI underwriting.</div>
-                    <button class="cta-btn cta-btn-violet" onclick="window.location.href='{{ route('vr') }}'">Get My Quote →</button>
+                    <button class="cta-btn cta-btn-violet" onclick="window.location.href='{{ route('calculator') }}'">Get My Quote →</button>
                 </div>
                 <div class="cta-card">
                     <span class="cta-emoji">🛡️</span>
                     <div class="cta-title">Buy Policy Now</div>
                     <div class="cta-desc">Instant issuance. No medical tests up to ₹1 Cr. Policy in your inbox in under 60 seconds.</div>
-                    <button class="cta-btn cta-btn-green" onclick="window.location.href='{{ route('vr') }}'">Buy Instantly →</button>
-                </div>
+                   <button class="cta-btn cta-btn-green" onclick="window.location.href='{{ route('policies.index') }}'">
+    Buy Instantly →
+</button>
+</div>
             </div>
 
             <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center;margin-top:8px;opacity:0;animation:fadeUp 0.6s 1.2s forwards">

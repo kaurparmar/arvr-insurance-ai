@@ -167,30 +167,63 @@
                 {{-- Right: Checkout Module --}}
                 <aside class="space-y-8">
                     {{-- Pricing Terminal --}}
-                    <div class="xr-card p-1 bg-gradient-to-br from-cyan-500/20 via-transparent to-violet-500/20">
-                        <div class="bg-slate-950 rounded-[22px] p-10 text-white relative overflow-hidden">
-                            {{-- Geometric Decoration --}}
-                            <div class="absolute top-0 right-0 p-4 opacity-10">
-                                <svg class="w-20 h-20" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="10 5"/></svg>
-                            </div>
+                    {{-- Pricing Terminal --}}
+<div class="xr-card p-1 bg-gradient-to-br from-cyan-500/20 via-transparent to-violet-500/20">
+    <div class="bg-slate-950 rounded-[22px] p-10 text-white relative overflow-hidden">
+        {{-- Geometric Decoration --}}
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+            <svg class="w-20 h-20" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="10 5"/></svg>
+        </div>
 
-                            <p class="text-[10px] uppercase tracking-[0.4em] text-cyan-400 font-black mb-6">Neural Premium Output</p>
-                            <div class="flex items-baseline gap-3 mb-8">
-                                <span class="syne text-7xl font-extrabold tracking-tighter">₹{{ number_format($plan->premium_amount) }}</span>
-                                <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">/ Cycle</span>
-                            </div>
-                            
-                            @auth
-                                <form action="{{ route('purchase.store') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="plan_id" value="{{ $plan->id }}">
-                                    <button type="submit" class="btn-xr">Deploy Policy ⚡</button>
-                                </form>
-                            @else
-                                <a href="{{ route('login') }}" class="btn-xr">Initialize Link</a>
-                            @endauth
-                        </div>
-                    </div>
+        <p class="text-[10px] uppercase tracking-[0.4em] text-cyan-400 font-black mb-6">Neural Premium Output</p>
+        <div class="flex items-baseline gap-3 mb-8">
+            <span class="syne text-7xl font-extrabold tracking-tighter">₹{{ number_format($plan->premium_amount) }}</span>
+            <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">/ Cycle</span>
+        </div>
+        
+        @auth
+            @php
+                // Check if user has an application for this specific plan
+                $existingApplication = auth()->user()->policyApplications()
+                    ->where('plan_id', $plan->_id ?? $plan->id)
+                    ->latest()
+                    ->first();
+            @endphp
+
+            @if(!$existingApplication)
+                {{-- Case 1: New User / No Application --}}
+                <a href="{{ route('policies.apply', $plan->_id ?? $plan->id) }}" class="btn-xr">
+                    Apply for Coverage ⚡
+                </a>
+            @elseif($existingApplication->status === 'pending')
+                {{-- Case 2: Waiting for Admin Approval --}}
+                <div class="text-center p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <p class="text-amber-500 font-black text-[10px] uppercase tracking-widest mb-2 animate-pulse">
+                        Verification in Progress
+                    </p>
+                    <p class="text-slate-400 text-xs italic">
+                        Please wait for system approval before initiating payment.
+                    </p>
+                </div>
+            @elseif($existingApplication->status === 'approved')
+                {{-- Case 3: Approved - Proceed to Payment --}}
+                <a href="{{ route('policies.payment', $existingApplication->id) }}" class="btn-xr bg-emerald-500 hover:shadow-emerald-500/40">
+                    Initialize Payment 💳
+                </a>
+                <p class="text-center text-[10px] text-emerald-500 font-bold mt-4 uppercase tracking-widest">
+                    Status: Authorization Granted
+                </p>
+            @elseif($existingApplication->status === 'active')
+                {{-- Case 4: Already Active --}}
+                <div class="btn-xr bg-slate-800 cursor-default opacity-80 text-slate-400">
+                    Protocol Active ✅
+                </div>
+            @endif
+        @else
+            <a href="{{ route('login') }}" class="btn-xr">Initialize Link</a>
+        @endauth
+    </div>
+</div>
 
                     {{-- Helper Card --}}
                     <div class="xr-card p-8 border-l-4 border-l-cyan-500">

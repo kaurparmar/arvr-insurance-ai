@@ -189,7 +189,7 @@
                             <td class="text-sub">₹{{ number_format($policy->plan->coverage_amount ?? 0) }}</td>
                             <td class="text-sub">₹{{ number_format($policy->premium_paid) }}</td>
                             <td><span class="badge {{ $policy->status==='active'?'badge-green':'badge-yellow' }}">{{ ucfirst($policy->status) }}</span></td>
-                            <td><a href="#" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a></td>
+                            <td><a href="@if($policy->status === 'active') {{ route('transactions.success', $policy->_id) }} @elseif($policy->status === 'pending_approval') {{ route('policies.application.success', $policy->_id) }} @elseif($policy->status === 'approved') {{ route('transactions.create', $policy->_id) }} @endif" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a></td>
                         </tr>
                         @endforeach
                         </tbody>

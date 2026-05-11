@@ -69,70 +69,91 @@
         </div>
 
         @auth
+            {{-- Action Buttons --}}
+            <div class="flex justify-center mb-12">
+                <a href="{{ route('claims.create') }}" class="btn-xr px-12 py-4 syne text-lg uppercase tracking-wider">
+                    🚀 File New Claim
+                </a>
+            </div>
+
             <div class="grid lg:grid-cols-2 gap-10 mb-16">
-                
-                {{-- Form Card --}}
+
+                {{-- Claims List --}}
                 <div class="xr-card p-8">
-                    <h2 class="syne text-hi text-2xl font-bold mb-8">File a New Claim</h2>
-                    <form action="{{ route('claims.store') }}" method="POST" class="space-y-6">
-                        @csrf
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-widest text-sub mb-3">Select Policy</label>
-                            <select name="policy_id" class="xr-input">
-                                <option value="">Choose a policy</option>
-                                @foreach($policies as $policy)
-                                    <option value="{{ $policy->_id ?? $policy->id }}">{{ $policy->policy_number }} — {{ $policy->plan->name ?? 'Plan' }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-widest text-sub mb-3">Claim Amount</label>
-                                <input name="claim_amount" type="number" step="0.01" class="xr-input" placeholder="₹ 0.00" />
+                    <h2 class="syne text-hi text-2xl font-bold mb-8">Your Claims History</h2>
+                    <div class="space-y-4">
+                        @forelse($claims as $claim)
+                            <a href="{{ route('claims.show', $claim->_id ?? $claim->id) }}" class="block p-5 rounded-2xl border dark:border-white/5 border-slate-100 bg-white/5 transition hover:border-cyan/30 hover:bg-cyan/5">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="syne text-hi font-bold text-sm">#{{ substr($claim->_id ?? $claim->id, -8) }}</div>
+                                    <span class="badge {{ $claim->status === 'approved' ? 'badge-approved' : 'badge-pending' }}">
+                                        {{ $claim->status }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-end">
+                                    <div>
+                                        <p class="text-xs text-sub mb-1">Policy: {{ $claim->policy->policy_number ?? 'N/A' }}</p>
+                                        <p class="text-hi font-medium">₹{{ number_format($claim->claim_amount) }}</p>
+                                        @if($claim->incident_date)
+                                        <p class="text-xs text-sub">Incident: {{ $claim->incident_date?->format('M j, Y') ?? 'N/A' }}</p>
+                                        @endif
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-[10px] text-sub">{{ $claim->submitted_at->diffForHumans() }}</p>
+                                        <div class="text-xs text-cyan-500 mt-1">View Details →</div>
+                                    </div>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="py-12 text-center">
+                                <div class="text-4xl mb-4">📡</div>
+                                <p class="text-sub text-sm mb-4">No claims found in your records.</p>
+                                <a href="{{ route('claims.create') }}" class="text-cyan-500 hover:text-cyan-400 text-sm underline">
+                                    File your first claim →
+                                </a>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-widest text-sub mb-3">Date of Incident</label>
-                                <input name="incident_date" type="date" class="xr-input" />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-widest text-sub mb-3">Claim Reason</label>
-                            <textarea name="claim_reason" rows="4" class="xr-input" placeholder="Describe the event for the claims officer..."></textarea>
-                        </div>
-
-                        <button type="submit" class="btn-xr w-full syne text-sm uppercase tracking-wider">Submit Claim Authorization</button>
-                    </form>
+                        @endforelse
+                    </div>
                 </div>
 
-                {{-- Status Feed --}}
+                {{-- Quick Stats --}}
                 <div class="space-y-6">
                     <div class="xr-card p-8">
-                        <h2 class="syne text-hi text-2xl font-bold mb-6">Recent Activity</h2>
-                        <div class="space-y-4">
-                            @forelse($claims as $claim)
-                                <div class="p-5 rounded-2xl border dark:border-white/5 border-slate-100 bg-white/5 transition hover:border-cyan/30">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <div class="syne text-hi font-bold text-sm">#{{ substr($claim->id, -8) }}</div>
-                                        <span class="badge {{ $claim->status === 'approved' ? 'badge-approved' : 'badge-pending' }}">
-                                            {{ $claim->status }}
-                                        </span>
-                                    </div>
-                                    <div class="flex justify-between items-end">
-                                        <div>
-                                            <p class="text-xs text-sub mb-1">Policy: {{ $claim->policy->policy_number ?? 'N/A' }}</p>
-                                            <p class="text-hi font-medium">₹{{ number_format($claim->claim_amount) }}</p>
-                                        </div>
-                                        <p class="text-[10px] text-sub">{{ $claim->created_at->diffForHumans() }}</p>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="py-12 text-center">
-                                    <div class="text-4xl mb-4">📡</div>
-                                    <p class="text-sub text-sm">No active claim signals found.</p>
-                                </div>
-                            @endforelse
+                        <h2 class="syne text-hi text-2xl font-bold mb-6">Claims Overview</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                <div class="text-2xl font-bold text-hi mb-1">{{ $claims->count() }}</div>
+                                <div class="text-xs text-sub uppercase tracking-wider">Total Claims</div>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                <div class="text-2xl font-bold text-emerald-500 mb-1">{{ $claims->where('status', 'approved')->count() }}</div>
+                                <div class="text-xs text-sub uppercase tracking-wider">Approved</div>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                <div class="text-2xl font-bold text-amber-500 mb-1">{{ $claims->where('status', 'pending')->count() }}</div>
+                                <div class="text-xs text-sub uppercase tracking-wider">Pending</div>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                <div class="text-2xl font-bold text-hi mb-1">₹{{ number_format($claims->sum('claim_amount')) }}</div>
+                                <div class="text-xs text-sub uppercase tracking-wider">Total Value</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Help Card --}}
+                    <div class="xr-card p-8">
+                        <h3 class="syne text-hi text-xl font-bold mb-4">Need Assistance?</h3>
+                        <p class="text-sub text-sm mb-4">Our AI claims assistant is available 24/7 to help you with your claims process.</p>
+                        <div class="space-y-2">
+                            <a href="mailto:claims@liveshieldxr.com" class="block text-cyan-500 hover:text-cyan-400 text-sm">
+                                📧 claims@liveshieldxr.com
+                            </a>
+                            <a href="tel:+1-800-CLAIMS" class="block text-cyan-500 hover:text-cyan-400 text-sm">
+                                📞 1-800-CLAIMS (252467)
+                            </a>
+                            <a href="#" class="block text-cyan-500 hover:text-cyan-400 text-sm">
+                                💬 Live Chat Support
+                            </a>
                         </div>
                     </div>
                 </div>
