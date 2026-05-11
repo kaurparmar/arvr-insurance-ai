@@ -134,6 +134,21 @@
     }
 
     /* ── Desktop nav links ─────────────────────────────────── */
+    .xr-mob-close {
+        position: absolute; top: 18px; right: 18px;
+        width: 32px; height: 32px; border-radius: 8px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: rgba(136,146,170,0.7);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 15px;
+        transition: all 0.2s; line-height: 1;
+    }
+    .xr-mob-close:hover {
+        background: rgba(255,59,107,0.08);
+        border-color: rgba(255,59,107,0.3);
+        color: #FF3B6B;
+    }
     .xr-nav-link {
         position: relative;
         padding: 6px 14px;
@@ -520,13 +535,16 @@ x-init="
 
             <!-- Desktop links -->
             <div class="hidden md:flex items-center gap-1" style="flex:1;justify-content:center;">
-                <a href="{{ route('home') }}"       class="xr-nav-link">Home</a>
-                <a href="{{ route('about') }}"      class="xr-nav-link">About</a>
-                <a href="{{ route('plans.index') }}" class="xr-nav-link">Plans</a>
+                <a href="{{ route('home') }}"       class="xr-nav-link {{ request()->routeIs('home') ? 'border-b-2 border-cyan-300' : '' }}">Home</a>
+                <a href="{{ route('about') }}"      class="xr-nav-link {{ request()->routeIs('about') 
+        ? 'border-b-2 border-cyan-300' 
+        : '' 
+   }}">About</a>
+                <a href="{{ route('plans.index') }}" class="xr-nav-link {{ request()->routeIs('plans.index') ? 'border-b-2 border-cyan-300' : '' }}">Plans</a>
                 <a href="{{ route('vr') }}"         class="xr-nav-link ar-demo active">
                     <span style="margin-right:4px">◈</span> AR Demo
                 </a>
-                <a href="{{ route('contact') }}"    class="xr-nav-link">Contact</a>
+                <a href="{{ route('contact') }}" class="xr-nav-link {{ request()->routeIs('contact') ? 'border-b-2 border-cyan-300' : '' }}">Contact</a>
             </div>
 
             <!-- Right side -->
@@ -636,7 +654,12 @@ x-init="
             class="xr-mob-drawer">
 
             <div class="xr-mob-inner">
-
+                {{-- Explicit close ✕ button --}}
+                <button
+                    @click="open = false"
+                    class="xr-mob-close"
+                    type="button"
+                    aria-label="Close menu">✕</button>
                 <!-- Nav section -->
                 <div class="xr-mob-section-label">Navigation</div>
 

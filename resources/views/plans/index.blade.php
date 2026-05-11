@@ -136,7 +136,7 @@
                     @endforeach
                 </div>
 
-                <a href="{{ route('plans.show', $plan) }}" class="btn-plan {{ $featured ? 'primary' : 'outline' }}">
+                <a href="@if(auth()->check()){{ route('plans.show', $plan) }}@else{{   route('login') }}@endif" class="btn-plan {{ $featured ? 'primary' : 'outline' }}">
                     {{ $featured ? 'Select Plan →' : 'View Details →' }}
                 </a>
             </div>

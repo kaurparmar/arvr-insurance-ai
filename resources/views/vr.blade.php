@@ -3,6 +3,7 @@
      AR/VR Life Insurance Experience for ARLife∞
      Laravel Blade Template | Full Cinematic Scene Flow
      ============================================================ --}}
+@props(['isAuthenticated' => auth()->check()])
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +15,194 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/vr.css">
 </head>
+
+<style>
+    [x-cloak] { display: none !important; }
+    .overflow-hidden { overflow: hidden; }
+
+    /* ── Hamburger ─────────────────────────────────────────── */
+    .xr-hamburger {
+        width: 36px; height: 36px;
+        border-radius: 9px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.04);
+        display: flex; align-items: center; justify-content: center;
+        flex-direction: column; gap: 5px;
+        cursor: pointer; transition: all 0.2s;
+        padding: 0;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 51;
+    }
+    .xr-hamburger:hover {
+        border-color: rgba(0,240,255,0.35);
+        background: rgba(0,240,255,0.06);
+    }
+    .xr-hamburger .bar {
+        width: 16px; height: 1.5px;
+        background: rgba(136,146,170,0.8);
+        border-radius: 2px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+        display: block;
+    }
+    .xr-hamburger.open .bar:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+        background: #00F0FF;
+    }
+    .xr-hamburger.open .bar:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+    .xr-hamburger.open .bar:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
+        background: #00F0FF;
+    }
+    .xr-hamburger.open {
+        border-color: rgba(0,240,255,0.4);
+        background: rgba(0,240,255,0.08);
+    }
+
+    /* ── Mobile overlay ────────────────────────────────────── */
+    .xr-mob-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.65);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 9998;
+    }
+
+    /* ── Mobile drawer ─────────────────────────────────────── */
+    .xr-mob-drawer {
+        position: fixed; right: 0; top: 0;
+        height: 100dvh; width: min(300px, 82vw);
+        background: rgba(5,10,22,0.99);
+        border-left: 1px solid rgba(0,240,255,0.12);
+        z-index: 9999;
+        display: flex; flex-direction: column;
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+        box-shadow: -20px 0 80px rgba(0,0,0,0.85);
+    }
+    .xr-mob-drawer::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0,240,255,0.6), rgba(139,92,246,0.6), transparent);
+    }
+
+    .xr-mob-inner {
+        display: flex; flex-direction: column;
+        height: 100%;
+        padding: 72px 20px 28px;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    /* Close ✕ button */
+    .xr-mob-close {
+        position: absolute; top: 18px; right: 18px;
+        width: 32px; height: 32px; border-radius: 8px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: rgba(136,146,170,0.7);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 15px;
+        transition: all 0.2s; line-height: 1;
+    }
+    .xr-mob-close:hover {
+        background: rgba(255,59,107,0.08);
+        border-color: rgba(255,59,107,0.3);
+        color: #FF3B6B;
+    }
+
+    .xr-mob-section-label {
+        font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+        color: rgba(136,146,170,0.45);
+        padding: 0 12px; margin-bottom: 6px;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .xr-mob-link {
+        display: flex; align-items: center; gap: 12px;
+        padding: 11px 14px; border-radius: 11px;
+        font-size: 14px; font-weight: 600;
+        color: rgba(136,146,170,0.85);
+        text-decoration: none;
+        transition: all 0.2s;
+        font-family: 'DM Sans', sans-serif;
+        position: relative;
+    }
+    .xr-mob-link:hover { color: #EEF2FF; background: rgba(255,255,255,0.04); }
+    .xr-mob-link.active { color: #00F0FF; background: rgba(0,240,255,0.07); }
+    .xr-mob-link .mob-icon { font-size: 15px; width: 22px; text-align: center; }
+
+    .xr-mob-link.ar-highlight {
+        color: #A78BFA;
+        background: rgba(139,92,246,0.07);
+        border: 1px solid rgba(139,92,246,0.15);
+    }
+    .xr-mob-link.ar-highlight:hover {
+        background: rgba(139,92,246,0.12);
+        border-color: rgba(139,92,246,0.3);
+    }
+
+    .xr-mob-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 14px 0; }
+    .xr-mob-auth { margin-top: auto; }
+
+    .xr-mob-user-card {
+        display: flex; align-items: center; gap: 12px;
+        padding: 14px; border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        margin-bottom: 12px;
+    }
+    .xr-mob-avatar {
+        width: 38px; height: 38px; border-radius: 50%;
+        background: linear-gradient(135deg, #00F0FF, #8B5CF6);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 700; color: #020F14;
+        font-family: 'Syne', sans-serif; flex-shrink: 0;
+    }
+    .xr-mob-user-info { overflow: hidden; }
+    .xr-mob-user-name { font-size: 14px; font-weight: 600; color: #EEF2FF; }
+    .xr-mob-user-tag  { font-size: 10px; color: rgba(0,240,255,0.6); letter-spacing: 1px; text-transform: uppercase; }
+
+    .xr-mob-btn-login {
+        display: block; width: 100%; padding: 12px;
+        border-radius: 10px; text-align: center;
+        font-size: 14px; font-weight: 700;
+        border: 1px solid rgba(0,240,255,0.3);
+        color: #00F0FF; text-decoration: none;
+        transition: all 0.2s; margin-bottom: 10px;
+        font-family: 'DM Sans', sans-serif;
+        background: rgba(0,240,255,0.06);
+    }
+    .xr-mob-btn-login:hover { background: rgba(0,240,255,0.12); border-color: rgba(0,240,255,0.5); }
+
+    .xr-mob-btn-register {
+        display: block; width: 100%; padding: 12px;
+        border-radius: 10px; text-align: center;
+        font-size: 14px; font-weight: 700;
+        background: linear-gradient(135deg, #00F0FF, #8B5CF6);
+        color: #020F14; text-decoration: none;
+        transition: all 0.2s; margin-bottom: 10px;
+        font-family: 'DM Sans', sans-serif; border: none;
+        box-shadow: 0 0 20px rgba(0,240,255,0.2);
+    }
+    .xr-mob-btn-register:hover { box-shadow: 0 0 32px rgba(0,240,255,0.4); }
+
+    .xr-mob-logout-btn {
+        width: 100%; padding: 11px;
+        border-radius: 10px; text-align: center;
+        font-size: 13px; font-weight: 700;
+        background: rgba(255,59,107,0.08);
+        border: 1px solid rgba(255,59,107,0.2);
+        color: #FF3B6B; cursor: pointer;
+        transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .xr-mob-logout-btn:hover { background: rgba(255,59,107,0.15); border-color: rgba(255,59,107,0.4); }
+</style>
+
 <body>
 
 <!-- Custom cursor -->
@@ -35,16 +224,156 @@
     <div id="xr-progress-fill"></div>
 </div>
 
-<!-- Navigation HUD -->
-<nav id="xr-nav">
-    <div class="nav-logo">Life<span>Shield</span> XR</div>
-    <div class="nav-badge">XR Simulation Live</div>
-    <div class="nav-scene-indicator">Scene <span id="current-scene-num">1</span> of 7</div>
-</nav>
+{{-- ══════════════════════════════════════════════════════════
+     ALPINE ROOT
+     The hamburger button and the drawer MUST both live inside
+     this single x-data div so they share the same `open` var.
+     ══════════════════════════════════════════════════════════ --}}
+<div
+    x-data="{ open: false }"
+    x-init="
+        $watch('open', v => {
+            v
+                ? document.body.classList.add('overflow-hidden')
+                : document.body.classList.remove('overflow-hidden');
+        });
+    "
+    @keydown.escape.window="open = false">
 
-<!-- ═══════════════════════════════════════════════════════════
-     SCENE WRAPPER
-     ══════════════════════════════════════════════════════════ -->
+    {{-- ── NAVIGATION HUD ──────────────────────────────────── --}}
+    {{--
+        IMPORTANT: #xr-nav must NOT have transform/filter/will-change
+        CSS properties — they create a new stacking context and trap
+        the drawer (z-index:95) beneath the nav (z-index:50).
+        Set only position + z-index here.
+    --}}
+    <nav id="xr-nav" style="position:relative; z-index:50;">
+        <div class="nav-logo">Life<span>Shield</span> XR</div>
+        <div class="nav-badge">XR Simulation Live</div>
+        <div class="nav-scene-indicator">
+            Scene <span id="current-scene-num">1</span> of 7
+        </div>
+
+        {{-- Hamburger — INSIDE Alpine root so @click has scope --}}
+        <button
+            @click="open = !open"
+            :class="open ? 'open' : ''"
+            class="xr-hamburger"
+            type="button"
+            aria-label="Toggle menu"
+            :aria-expanded="open.toString()">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </nav>
+
+    {{-- ══════════════════════════════════════════════════════
+         MOBILE DRAWER
+         Also INSIDE Alpine root — shares the same `open` state.
+         No md:hidden here — Alpine x-show handles visibility.
+         ══════════════════════════════════════════════════════ --}}
+    <div x-cloak>
+
+        {{-- Backdrop overlay --}}
+        <div
+            x-show="open"
+            x-transition:enter="transition ease-out duration-250"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="open = false"
+            class="xr-mob-overlay">
+        </div>
+
+        {{-- Drawer panel — slide + fade in from right --}}
+        <div
+            x-show="open"
+            x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="translate-x-full opacity-0"
+            x-transition:enter-end="translate-x-0 opacity-100"
+            x-transition:leave="transition ease-in duration-220 transform"
+            x-transition:leave-start="translate-x-0 opacity-100"
+            x-transition:leave-end="translate-x-full opacity-0"
+            class="xr-mob-drawer">
+
+            <div class="xr-mob-inner">
+
+                {{-- Explicit close ✕ button --}}
+                <button
+                    @click="open = false"
+                    class="xr-mob-close"
+                    type="button"
+                    aria-label="Close menu">✕</button>
+
+                <!-- Navigation links -->
+                <div class="xr-mob-section-label">Navigation</div>
+
+                <a href="{{ route('home') }}"        @click="open = false" class="xr-mob-link">
+                    <span class="mob-icon">⌂</span> Home
+                </a>
+                <a href="{{ route('about') }}"       @click="open = false" class="xr-mob-link">
+                    <span class="mob-icon">◇</span> About
+                </a>
+                <a href="{{ route('plans.index') }}" @click="open = false" class="xr-mob-link">
+                    <span class="mob-icon">☰</span> Plans
+                </a>
+                <a href="{{ route('vr') }}"          @click="open = false" class="xr-mob-link ar-highlight">
+                    <span class="mob-icon">◈</span> AR Demo
+                    <span style="margin-left:auto;font-size:9px;letter-spacing:1.5px;color:rgba(139,92,246,0.7);text-transform:uppercase;">Live</span>
+                </a>
+                <a href="{{ route('contact') }}"     @click="open = false" class="xr-mob-link">
+                    <span class="mob-icon">✉</span> Contact
+                </a>
+
+                <div class="xr-mob-divider"></div>
+
+                <!-- Auth section -->
+                <div class="xr-mob-auth">
+
+                    @if($isAuthenticated)
+                        <div class="xr-mob-user-card">
+                            <div class="xr-mob-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                            <div class="xr-mob-user-info">
+                                <div class="xr-mob-user-name">{{ Auth::user()->name }}</div>
+                                <div class="xr-mob-user-tag">● Policy Active</div>
+                            </div>
+                        </div>
+
+                        <div class="xr-mob-section-label" style="margin-top:4px;">Account</div>
+                        <a href="{{ route('dashboard') }}"    @click="open = false" class="xr-mob-link">
+                            <span class="mob-icon">⬡</span> Dashboard
+                        </a>
+                        <a href="{{ route('profile.edit') }}" @click="open = false" class="xr-mob-link">
+                            <span class="mob-icon">◎</span> My Profile
+                        </a>
+
+                        <div class="xr-mob-divider"></div>
+
+                        <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                            @csrf
+                            <button type="submit" class="xr-mob-logout-btn">⏻ &nbsp;Sign Out</button>
+                        </form>
+
+                    @else
+                        <div class="xr-mob-section-label">Get Started</div>
+                        <a href="{{ route('login') }}"    class="xr-mob-btn-login">Login</a>
+                        <a href="{{ route('register') }}" class="xr-mob-btn-register">Create Account →</a>
+                    @endif
+
+                </div>{{-- /.xr-mob-auth --}}
+            </div>{{-- /.xr-mob-inner --}}
+        </div>{{-- /.xr-mob-drawer --}}
+    </div>{{-- /x-cloak --}}
+
+</div>{{-- /Alpine root — ends here, BEFORE scene-wrapper --}}
+
+
+{{-- ═══════════════════════════════════════════════════════════
+     SCENE WRAPPER (outside Alpine root — no Alpine needed here)
+     ══════════════════════════════════════════════════════════ --}}
 <div id="scene-wrapper">
 
     {{-- ── SCENE 1: WELCOME / PEACEFUL HOME ──────────────── --}}
@@ -100,10 +429,8 @@
     <div class="xr-scene" id="scene-2">
         <div class="scene-bg s2-bg"></div>
 
-        <!-- Full-screen crash animation canvas -->
         <canvas id="crash-canvas"></canvas>
 
-        <!-- AR HUD overlays on top of canvas -->
         <div id="crash-hud">
             <div id="crash-chip" class="scene-chip chip-rose" style="opacity:0">Scene 02 &mdash; Incident</div>
 
@@ -122,7 +449,6 @@
                 </div>
             </div>
 
-            <!-- Post-crash overlay text -->
             <div id="crash-title-wrap" style="opacity:0;pointer-events:none">
                 <div class="crash-incident-label">INCIDENT RECORDED — 11:47 PM</div>
                 <div class="crash-main-title">ACCIDENT<br><span>OCCURRED</span></div>
@@ -130,7 +456,6 @@
             </div>
         </div>
 
-        <!-- Stats bar (shown after crash) -->
         <div id="crash-stats-row" style="opacity:0">
             <div class="cstat">
                 <div class="cstat-label">Response Time</div>
@@ -418,7 +743,7 @@
         </div>
     </div>
 
-</div>{{-- end scene-wrapper --}}
+</div>{{-- /#scene-wrapper --}}
 
 <!-- ─── SCENE CONTROLS ──────────────────────────────────────── -->
 <div id="scene-controls">
@@ -429,7 +754,8 @@
     </div>
     <button class="ctrl-btn primary" id="btn-next" onclick="changeScene(1)">Next →</button>
 </div>
-
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="/js/vr.js"></script>
+
 </body>
 </html>

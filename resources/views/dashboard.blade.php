@@ -226,7 +226,7 @@
                         [route('plans.index'),'📋','Browse Plans','rgba(0,240,255,.08)','var(--cyan)'],
                         [route('claims'),'⚡','File Claim','rgba(139,92,246,.08)','var(--violet)'],
                         [route('vr'),'🥽','AR Demo','rgba(0,230,118,.08)','var(--emerald)'],
-                        [route('premium.calculator'),'🧮','Calculator','rgba(255,183,0,.08)','var(--amber)'],
+                        [route('calculator'),'🧮','Calculator','rgba(255,183,0,.08)','var(--amber)'],
                     ] as [$href,$icon,$label,$bg,$col])
                     <a href="{{ $href }}" class="qa-card" style="border-color:{{ $col }}22">
                         <div class="qa-icon" style="background:{{ $bg }}">{{ $icon }}</div>
