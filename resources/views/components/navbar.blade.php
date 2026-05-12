@@ -352,6 +352,10 @@
         cursor: pointer; transition: all 0.2s;
         padding: 0;
     }
+    @media (min-width: 768px) {
+        .xr-hamburger { display: none; }
+    }
+
     .xr-hamburger:hover {
         border-color: rgba(0,240,255,0.35);
         background: rgba(0,240,255,0.06);
@@ -720,7 +724,7 @@ x-init="
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
             @click="open = false"
-            class="xr-mob-overlay">
+            class="xr-mob-overlay md:hidden">
         </div>
 
         <!-- Drawer panel -->
@@ -738,7 +742,7 @@ x-init="
                 {{-- Explicit close ✕ button --}}
                 <button
                     @click="open = false"
-                    class="xr-mob-close"
+                    class="xr-mob-close md:hidden"
                     type="button"
                     aria-label="Close menu">✕</button>
                 <!-- Nav section -->
