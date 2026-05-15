@@ -65,4 +65,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Claim::class);
     }
+    public function policyApplications()
+{
+    return $this->hasMany(Policy::class, 'user_id');
+}
 }
