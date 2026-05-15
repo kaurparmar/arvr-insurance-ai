@@ -1,7 +1,6 @@
-# Use official PHP image
 FROM php:8.2-cli
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -34,14 +33,8 @@ RUN npm install
 # Build frontend assets
 RUN npm run build
 
-# Clear Laravel caches
-RUN php artisan config:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
-RUN php artisan cache:clear
-
-# Expose container port
+# Expose port
 EXPOSE 8000
 
-# Start Laravel server
+# Start Laravel
 CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
