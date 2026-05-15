@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: arvr-insurance
+    runtime: docker
+    plan: free
+
+    envVars:
+      - key: APP_ENV
+        value: production
+
+      - key: APP_DEBUG
+        value: false
+
+      - key: DB_CONNECTION
+        value: mongodb
+
+      - key: LOG_CHANNEL
+        value: stack
