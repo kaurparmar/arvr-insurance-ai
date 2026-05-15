@@ -667,7 +667,7 @@ x-init="
     <div class="cyber-lang-wrapper">
     <span class="lang-icon text-sm">Select Language</span>
     <select class="cyber-select" onchange="window.location.href=this.value">
-        <option value="" disabled {{ !session()->has('locale') ? 'selected' : '' }}>Region Select</option>
+        <option value="" disabled {{ !session()->has('locale') ? 'selected' : '' }}>Select Language</option>
         <option value="/lang/en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN - English</option>
         <option value="/lang/pa" {{ app()->getLocale() == 'pa' ? 'selected' : '' }}>PA - ਪੰਜਾਬੀ</option>
         <option value="/lang/hi" {{ app()->getLocale() == 'hi' ? 'selected' : '' }}>HI - हिन्दी</option>

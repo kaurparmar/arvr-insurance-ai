@@ -78,4 +78,15 @@ return [
     'Our AI-assisted agents are standing by to clarify coverage synchronization or onboarding errors.' => 'हमारे AI-सहायता प्राप्त एजेंट कवरेज सिंक्रनाइज़ेशन या ऑनबोर्डिंग त्रुटियों को स्पष्ट करने के लिए तैयार हैं।',
     'Request Uplink' => 'अपलिंक का अनुरोध करें',
     'All Systems Operational' => 'सभी सिस्टम संचालन में हैं',
+    'Live Plans' => 'लाइव योजनाएं',
+    'Live' => 'लाइव',
+    
+    'Home'=>'मुख्य पृष्ठ',
+    'About'=>'हमारे बारे में',
+    'Plans'=>'योजनाएं',
+    'Contact'=>'संपर्क',
+    'Dashboard'=>'डैशबोर्ड',
+    'Profile'=>'प्रोफ़ाइल',
+    'Logout'=>'लॉगआउट',
+    'GetStarted'=>'शुरू करें',
 ];

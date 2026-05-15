@@ -165,7 +165,9 @@
     {{-- ═══ LIVE PLANS ═══ --}}
     <section class="section">
         <div style="text-align:center;margin-bottom:56px">
-            <span class="xr-chip chip-live"><span class="chip-dot"></span> Live Plans</span>
+            <span class="xr-chip chip-live">
+                <!-- <span class="chip-dot"></span> -->
+                 {{ __('messages.Live Plans') }}</span>
             <h2 class="syne text-hi" style="font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-1.5px;margin-top:20px;margin-bottom:12px">Database-backed Plans Shown Live.</h2>
             <p class="text-sub" style="font-size:16px;max-width:520px;margin:0 auto;line-height:1.65">Every plan tile reflects the current database inventory so users see accurate coverage data.</p>
         </div>
@@ -178,7 +180,7 @@
                         <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:{{ $col }};font-weight:700;margin-bottom:6px">{{ $plan->duration_years }}yr term</div>
                         <h3 class="syne text-hi" style="font-size:20px;font-weight:700">{{ $plan->name }}</h3>
                     </div>
-                    <span class="live-badge">Live</span>
+                    <span class="live-badge">{{ __('messages.Live') }}</span>
                 </div>
                 <p class="text-sub" style="font-size:13px;line-height:1.6;margin-bottom:20px">{{ Str::limit($plan->description,90) }}</p>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
