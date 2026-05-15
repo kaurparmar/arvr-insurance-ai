@@ -12,31 +12,64 @@
         <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
+        <script>
+            (function () {
+                const theme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                if (theme === 'dark' || (!theme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            })();
+        </script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
             :root {
+                --bg-void: #F8FAFF;
+                --bg-deep: #E5E7EB;
+                --bg-panel: rgba(255,255,255,0.92);
+                --cyan: #00B8FF;
+                --cyan-dim: rgba(0,184,255,0.15);
+                --cyan-glow: rgba(0,184,255,0.06);
+                --violet: #8B5CF6;
+                --violet-dim: rgba(139,92,246,0.15);
+                --rose: #E11D48;
+                --rose-dim: rgba(225,29,72,0.15);
+                --emerald: #10B981;
+                --emerald-dim: rgba(16,185,129,0.12);
+                --text-hi: #111827;
+                --text-mid: #475569;
+                --border-color: rgba(15,23,42,0.08);
+            }
+
+            .dark {
                 --bg-void: #03060F;
                 --bg-deep: #060C1A;
                 --bg-panel: rgba(8,14,30,0.92);
                 --cyan: #00F0FF;
                 --cyan-dim: rgba(0,240,255,0.15);
                 --cyan-glow: rgba(0,240,255,0.06);
-                --violet: #8B5CF6;
-                --violet-dim: rgba(139,92,246,0.15);
                 --rose: #FF3B6B;
                 --rose-dim: rgba(255,59,107,0.15);
                 --emerald: #00E676;
                 --emerald-dim: rgba(0,230,118,0.12);
                 --text-hi: #EEF2FF;
                 --text-mid: #8892AA;
+                --border-color: rgba(0,240,255,0.2);
             }
-            
+
             body {
-                background: linear-gradient(135deg, var(--bg-void) 0%, #0A0E1E 100%);
+                background: linear-gradient(135deg, var(--bg-void) 0%, #F8FAFF 100%);
                 color: var(--text-hi);
                 font-family: 'DM Sans', sans-serif;
             }
-            
+
+            .dark body {
+                background: linear-gradient(135deg, var(--bg-void) 0%, #0A0E1E 100%);
+            }
+
             .auth-container {
                 position: relative;
                 overflow: hidden;
@@ -95,6 +128,10 @@
                 z-index: 20;
                 border-bottom: 1px solid var(--cyan-dim);
                 backdrop-filter: blur(20px);
+                background: rgba(255,255,255,0.7);
+            }
+
+            .dark .nav-bar {
                 background: rgba(3,6,15,0.7);
             }
         </style>
