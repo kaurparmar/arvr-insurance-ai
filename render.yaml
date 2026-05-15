@@ -8,6 +8,9 @@ services:
       - key: APP_ENV
         value: production
 
+      - key: APP_URL
+        value: https://arvr-insurance.onrender.com
+
       - key: APP_DEBUG
         value: false
 
