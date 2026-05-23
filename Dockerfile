@@ -1,6 +1,7 @@
 FROM php:8.2-cli
 
 # Install system dependencies, build tools, plus Python 3 and pip
+# FIX: Added g++ explicitly to make sure chroma-hnswlib can compile its C++ binaries
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
@@ -10,11 +11,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs \
     npm \
     build-essential \
+    g++ \
     autoconf \
     pkg-config \
     libssl-dev \
     zlib1g-dev \
     python3 \
+    python3-dev \
     python3-pip \
     python3-venv \
     && docker-php-ext-install zip \
@@ -59,6 +62,10 @@ RUN npm run build
 # Set environment flags to prevent warning crashes on cloud architectures
 ENV PYTHONUNBUFFERED=1
 ENV HF_HUB_DISABLE_SYMLINKS_WARNING=1
+
+# FIX: Force-update pip and wheel tools first. This gives Python 3.13 the blueprint
+# it needs to compile older legacy packages like chroma-hnswlib without throwing errors.
+RUN pip3 install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
 
 # Install Python requirements globally inside the container environment
 RUN pip3 install --no-cache-dir --break-system-packages -r ai-backend/requirements.txt
