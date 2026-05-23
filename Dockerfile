@@ -5,50 +5,40 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     curl \
-    zip \
     libzip-dev \
+    zip \
     nodejs \
     npm \
     build-essential \
-    gcc \
-    g++ \
-    make \
-    cmake \
     autoconf \
     pkg-config \
     libssl-dev \
-    libffi-dev \
+    zlib1g-dev \
     python3 \
     python3-pip \
-    python3-dev \
-    zlib1g-dev \
     && docker-php-ext-install zip \
     && rm -rf /var/lib/apt/lists/*
 
-# MongoDB extension
+# 🔥 FIX: Install and register the PHP MongoDB extension required by your project
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
 
-# Upgrade pip
-RUN pip3 install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+# Fix: Ensure pip, setuptools, and wheel upgrade smoothly ignoring Debian blocks
+RUN pip3 install --no-cache-dir --break-system-packages --ignore-installed --upgrade pip setuptools wheel
 
-# Composer
+# Install PHP Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
-
 COPY . .
 
-# Laravel dependencies
+# Install Laravel dependencies & Build frontend assets
 RUN composer install --no-dev --optimize-autoloader
+RUN npm install && npm run build
 
-# Frontend build
-RUN npm install
-RUN npm run build
-
-# Python requirements
-RUN pip3 install --no-cache-dir --break-system-packages -r ai_backend/requirements.txt
+# Install Python requirements cleanly
+RUN pip3 install --no-cache-dir --break-system-packages -r ai-backend/requirements.txt
 
 EXPOSE 8000
 
-CMD sh -c "python3 -m uvicorn ai_backend.main:app --host 0.0.0.0 --port 8001 & php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
+CMD python3 -m uvicorn ai-backend.main:app --host 0.0.0.0 --port 8001 & php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
