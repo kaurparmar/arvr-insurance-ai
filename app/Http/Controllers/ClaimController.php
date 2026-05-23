@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Claim;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class ClaimController extends Controller
 {
+    /**
+     * Display a listing of the user's claims alongside their insurance policies.
+     */
     public function index()
     {
         $claims = Claim::with(['policy.plan'])
@@ -20,12 +24,18 @@ class ClaimController extends Controller
         return view('claims', compact('claims', 'policies'));
     }
 
+    /**
+     * Show the form for creating a new claim entry.
+     */
     public function create()
     {
         $policies = auth()->user()->policies()->with('plan')->get();
         return view('claims.create', compact('policies'));
     }
 
+    /**
+     * Store a newly created claim, process attachments, and trigger the automated AI agent pipeline.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -45,25 +55,22 @@ class ClaimController extends Controller
         $damagePhotos = [];
         $otherDocuments = [];
 
-        // Handle file uploads
+        // Retain original multi-file storage arrays
         if ($request->hasFile('medical_reports')) {
             foreach ($request->file('medical_reports') as $file) {
-                $path = $file->store('claims/medical-reports', 'public');
-                $medicalReports[] = $path;
+                $medicalReports[] = $file->store('claims/medical-reports', 'public');
             }
         }
 
         if ($request->hasFile('damage_photos')) {
             foreach ($request->file('damage_photos') as $file) {
-                $path = $file->store('claims/damage-photos', 'public');
-                $damagePhotos[] = $path;
+                $damagePhotos[] = $file->store('claims/damage-photos', 'public');
             }
         }
 
         if ($request->hasFile('other_documents')) {
             foreach ($request->file('other_documents') as $file) {
-                $path = $file->store('claims/other-documents', 'public');
-                $otherDocuments[] = $path;
+                $otherDocuments[] = $file->store('claims/other-documents', 'public');
             }
         }
 
@@ -72,7 +79,8 @@ class ClaimController extends Controller
             $policeReport = $request->file('police_report')->store('claims/police-reports', 'public');
         }
 
-        Claim::create([
+        // 1. Persist the complete record using Eloquent Model definitions
+        $claim = Claim::create([
             'policy_id' => $request->policy_id,
             'user_id' => auth()->id(),
             'claim_reason' => $request->claim_reason,
@@ -83,14 +91,39 @@ class ClaimController extends Controller
             'police_report' => $policeReport,
             'damage_photos' => $damagePhotos,
             'other_documents' => $otherDocuments,
-            'claim_amount' => $request->claim_amount,
+            'claim_amount' => (float)$request->claim_amount,
             'status' => 'pending',
             'submitted_at' => now(),
         ]);
 
+        // 2. Dispatch payload string asynchronously over the internal network to the AI Orchestrator
+        try {
+            // Falls back securely to the internal monolith port 8001 if config mapping is missing
+            $baseUrl = config('services.ai_backend.url', 'http://127.0.0.1:8001');
+            $apiUrl = $baseUrl . '/api/evaluate-claim';
+
+            $response = Http::timeout(12)->post($apiUrl, [
+                'claim_id' => (string)$claim->_id
+            ]);
+
+            if ($response->successful()) {
+                $evalData = $response->json();
+                
+                return redirect()->route('claims')->with('flash_ai', [
+                    'recommendation' => $evalData['recommendation'] ?? 'Under Review',
+                    'reason' => $evalData['reason'] ?? 'Dispatched to validation pipeline successfully.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Fail gracefully without interrupting user flow if AI background service is waking up
+        }
+
         return redirect()->route('claims')->with('success', 'Claim submitted successfully. You will receive updates via email.');
     }
 
+    /**
+     * Show an individual claim detail profile.
+     */
     public function show($id)
     {
         $claim = Claim::with(['policy.plan', 'user'])
@@ -98,5 +131,50 @@ class ClaimController extends Controller
             ->findOrFail($id);
 
         return view('claims.show', compact('claim'));
+    }
+
+    /**
+     * Administrative Dashboard listing matching flagged AI risk reviews.
+     */
+    public function adminIndex()
+    {
+        // Retains full access tracking query for the admin panel review queue
+        $flaggedClaims = Claim::with(['policy.plan', 'user'])
+            ->where('status', 'Flagged For Review')
+            ->orWhere('ai_recommendation', 'flag')
+            ->latest()
+            ->get();
+
+        return view('admin.claims', compact('flaggedClaims'));
+    }
+
+    /**
+     * Admin action override method syncing human manual decision changes with the AI logic pipeline.
+     */
+    public function adminResolve(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Approved,Rejected',
+            'admin_note' => 'required|string'
+        ]);
+
+        try {
+            $baseUrl = config('services.ai_backend.url', 'http://127.0.0.1:8001');
+            $apiUrl = $baseUrl . '/api/update-claim-status';
+
+            $response = Http::post($apiUrl, [
+                'claim_id' => $id,
+                'status' => $request->status,
+                'admin_note' => $request->admin_note
+            ]);
+
+            if ($response->successful()) {
+                return redirect()->back()->with('success', 'Claim ledger status resolved successfully.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to synchronize decision with analytics pipeline.');
+        }
+
+        return redirect()->back()->with('error', 'System connection failed during synchronization.');
     }
 }

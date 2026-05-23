@@ -31,6 +31,7 @@ class User extends Authenticatable
         'phone',
         'address',
         'role',
+        'is_admin',
     ];
 
     /**
@@ -69,4 +70,10 @@ class User extends Authenticatable
 {
     return $this->hasMany(Policy::class, 'user_id');
 }
+
+public function isAdmin(): bool
+    {
+        // Casts to boolean safely in case it's stored as 1/0 or true/false
+        return (bool) ($this->is_admin ?? false);
+    }
 }

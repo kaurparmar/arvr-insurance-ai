@@ -88,4 +88,15 @@ return [
     'Profile'=>'Profile',
     'Logout'=>'Logout',
     'GetStarted'=>'Get Started',
+
+  //admin claim review
+'admin_title' => 'Claims Flagged for Manual Review',
+'no_claims' => 'No claims require manual review at this time.',
+'user_statement' => 'User Statement',
+'ai_assessment' => '🤖 AI Assessment & Risk Score',
+'risk_level' => 'Risk Flag Level:',
+'reasoning_matrix' => 'Reasoning Matrix:',
+'adjuster_note' => 'Manual Resolution Adjuster Note',
+'approve' => 'Approve Claim',
+'reject' => 'Reject Claim',
 ];

@@ -1,4 +1,7 @@
-@props(['isAuthenticated' => auth()->check()])
+@props([
+    'isAuthenticated' => auth()->check(),
+    'isAdmin' => auth()->check() && (auth()->user()->role === 'admin' || (method_exists(auth()->user(), 'isAdmin') && auth()->user()->isAdmin()))
+])
 
 <style>
     [x-cloak] { display: none !important; }
@@ -297,7 +300,7 @@
     /* Dropdown */
     .xr-dropdown {
         position: absolute; top: calc(100% + 10px); right: 0;
-        min-width: 200px;
+        min-width: 220px;
         background: rgba(6,12,26,0.97);
         border: 1px solid rgba(0,240,255,0.12);
         border-radius: 14px;
@@ -320,6 +323,20 @@
     }
     .xr-dd-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(136,146,170,0.5); margin-bottom: 2px; }
     .xr-dd-name  { font-size: 14px; font-weight: 600; color: #EEF2FF; }
+    
+    /* Admin Specialty Dropdown Link Style */
+    .xr-dd-link.admin-glow {
+        color: #00F0FF;
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        font-weight: 600;
+    }
+    .xr-dd-link.admin-glow:hover {
+        background: rgba(0, 240, 255, 0.12);
+        border-color: rgba(0, 240, 255, 0.4);
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+    }
+
     .xr-dd-link {
         display: flex; align-items: center; gap: 10px;
         padding: 9px 12px; border-radius: 9px;
@@ -331,6 +348,11 @@
     .xr-dd-link:hover { background: rgba(255,255,255,0.05); color: #EEF2FF; }
     .xr-dd-link .dd-icon { font-size: 14px; width: 20px; text-align: center; opacity: 0.7; }
     .xr-dd-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 0; }
+    
+    .xr-dd-item-container {
+        padding: 4px 6px;
+    }
+
     .xr-dd-logout {
         display: flex; align-items: center; gap: 10px;
         padding: 9px 12px; border-radius: 9px;
@@ -431,6 +453,17 @@
     }
     .xr-mob-link .mob-icon { font-size: 15px; width: 22px; text-align: center; }
 
+    /* Mobile Admin Highlight style */
+    .xr-mob-link.admin-highlight {
+        color: #00F0FF;
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.15);
+    }
+    .xr-mob-link.admin-highlight:hover {
+        background: rgba(0, 240, 255, 0.12);
+        border-color: rgba(0, 240, 255, 0.35);
+    }
+
     .xr-mob-link.ar-highlight {
         color: #A78BFA;
         background: rgba(139,92,246,0.07);
@@ -502,79 +535,80 @@
     }
     .xr-mob-logout-btn:hover { background: rgba(255,59,107,0.15); border-color: rgba(255,59,107,0.4); }
 
-
-    /* The custom wrapper for the select */
+    /* ── Language Switcher Custom Layout ───────────────────── */
     .cyber-lang-wrapper {
         position: relative;
         display: flex;
         align-items: center;
-        padding: 10px 16px;
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        border-radius: 4px;
-        margin: 5px 12px;
-        transition: all 0.3s ease;
-        overflow: hidden;
+        padding: 8px 12px;
+        background: rgba(0, 240, 255, 0.04);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        width: 100%;
     }
-
     .cyber-lang-wrapper:hover {
-        border-color: #00F0FF;
-        background: rgba(0, 240, 255, 0.1);
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        border-color: rgba(0, 240, 255, 0.45);
+        background: rgba(0, 240, 255, 0.08);
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
     }
-
-    /* Icon styling */
     .lang-icon {
-        margin-right: 12px;
-        font-size: 1.1rem;
-        filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.5));
+        margin-right: 8px;
+        font-size: 12px;
+        color: rgba(136,146,170,0.6);
+        white-space: nowrap;
     }
-
-    /* The actual Select - Hidden but functional */
     .cyber-select {
         appearance: none;
         -webkit-appearance: none;
         background: transparent;
         border: none;
         color: #00F0FF;
-        font-family: 'Rajdhani', sans-serif; /* Or your theme font */
+        font-family: 'DM Sans', sans-serif;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 12px;
         width: 100%;
         cursor: pointer;
         outline: none;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
+        padding-right: 20px;
     }
-
-    /* Custom Arrow */
     .cyber-lang-wrapper::after {
         content: '▼';
-        font-size: 0.7rem;
+        font-size: 8px;
         color: #00F0FF;
         position: absolute;
-        right: 15px;
+        right: 12px;
         pointer-events: none;
+        opacity: 0.7;
     }
-
-    /* Option styling (limited browser support, but keeps theme dark) */
     .cyber-select option {
-        background: #0a0a0f;
-        color: #ffffff;
-        padding: 10px;
+        background: #060c1a;
+        color: #eef2ff;
+        padding: 8px;
+    }
+    .xr-lang-badge {
+        font-size: 9px;
+        color: #00F0FF;
+        font-weight: 700;
+        background: rgba(0, 240, 255, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        margin-left: auto;
     }
 </style>
 
-<div x-data="{
-    open: false,
+<div x-data={{  
+    `open: false,
     dropOpen: false,
     darkMode: true,
     toggleTheme() {
         this.darkMode = !this.darkMode;
         localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
         document.documentElement.classList.toggle('dark', this.darkMode);
-    }
-}"
+    }`
+}}
 x-init="
     $watch('open', v => v ? document.body.classList.add('overflow-hidden') : document.body.classList.remove('overflow-hidden'));
     darkMode = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -601,26 +635,17 @@ x-init="
 
             <!-- Desktop links -->
             <div class="hidden md:flex items-center gap-1" style="flex:1;justify-content:center;">
-                <a href="{{ route('home') }}"       class="xr-nav-link {{ request()->routeIs('home') ? 'border-b-2 border-cyan-300' : '' }}">Home</a>
-                <a href="{{ route('about') }}"      class="xr-nav-link {{ request()->routeIs('about') 
-        ? 'border-b-2 border-cyan-300' 
-        : '' 
-   }}">About</a>
-                <a href="{{ route('plans.index') }}" class="xr-nav-link {{ request()->routeIs('plans.index') ? 'border-b-2 border-cyan-300' : '' }}">Plans</a>
-                <a href="{{ route('vr') }}"         class="xr-nav-link ar-demo active">
+                <a href="{{ route('home') }}" class="xr-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                <a href="{{ route('about') }}" class="xr-nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
+                <a href="{{ route('plans.index') }}" class="xr-nav-link {{ request()->routeIs('plans.index') ? 'active' : '' }}">Plans</a>
+                <a href="{{ route('vr') }}" class="xr-nav-link ar-demo {{ request()->routeIs('vr') ? 'active' : '' }}">
                     <span style="margin-right:4px">◈</span> AR Demo
                 </a>
-                <a href="{{ route('contact') }}" class="xr-nav-link {{ request()->routeIs('contact') ? 'border-b-2 border-cyan-300' : '' }}">Contact</a>
+                <a href="{{ route('contact') }}" class="xr-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
             </div>
 
-            <!-- Right side -->
+            <!-- Right side controls panel -->
             <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-
-                <!-- Live badge (desktop) -->
-                <!-- <div class="xr-live-badge hidden md:inline-flex">
-                    <div class="xr-live-dot"></div>
-                    XR Live
-                </div> -->
 
                 <!-- Theme toggle -->
                 <button @click="toggleTheme()" class="xr-theme-btn" type="button" :title="darkMode ? 'Light mode' : 'Dark mode'">
@@ -647,38 +672,46 @@ x-init="
                             </svg>
                         </button>
 
-                        <!-- Dropdown -->
+                        <!-- Dropdown Menu Options -->
                         <div :class="dropOpen ? 'open' : ''" class="xr-dropdown">
                             <div class="xr-dd-header">
                                 <div class="xr-dd-label">Signed in as</div>
                                 <div class="xr-dd-name">{{ Auth::user()->name }}</div>
                             </div>
+                            
+                            {{-- Integrated Desktop Admin Link --}}
+                            @if($isAdmin)
+                                <a href="{{ route('admin.dashboard') }}" class="xr-dd-link admin-glow">
+                                    <span class="dd-icon" style="opacity:1">⚡</span> Admin Panel
+                                </a>
+                                <div class="xr-dd-divider"></div>
+                            @endif
+
                             <a href="{{ route('dashboard') }}" class="xr-dd-link">
                                 <span class="dd-icon">⬡</span> Dashboard
                             </a>
                             <a href="{{ route('profile.edit') }}" class="xr-dd-link">
                                 <span class="dd-icon">◎</span> Profile
                             </a>
-<div class="xr-dd-divider"></div>
 
-<!-- Integrated Language Switcher -->
-<div class="xr-dd-link" style="position: relative; cursor: default;">
-   
-    <div class="cyber-lang-wrapper">
-    <span class="lang-icon text-sm">Select Language</span>
-    <select class="cyber-select" onchange="window.location.href=this.value">
-        <option value="" disabled {{ !session()->has('locale') ? 'selected' : '' }}>Select Language</option>
-        <option value="/lang/en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN - English</option>
-        <option value="/lang/pa" {{ app()->getLocale() == 'pa' ? 'selected' : '' }}>PA - ਪੰਜਾਬੀ</option>
-        <option value="/lang/hi" {{ app()->getLocale() == 'hi' ? 'selected' : '' }}>HI - हिन्दी</option>
-    </select>
-</div>
-    <span style="font-size: 10px; color: #00F0FF; font-weight: 700; text-transform: uppercase;">
-        {{ strtoupper(app()->getLocale()) }}
-    </span>
-</div>
+                            <div class="xr-dd-divider"></div>
 
-<div class="xr-dd-divider"></div>
+                            <!-- Integrated Language Switcher Area -->
+                            <div class="xr-dd-item-container">
+                                <div class="cyber-lang-wrapper">
+                                    <span class="lang-icon">LANG:</span>
+                                    <select class="cyber-select" onchange="window.location.href=this.value">
+                                        <option value="" disabled {{ !session()->has('locale') ? 'selected' : '' }}>Select Language</option>
+                                        <option value="/lang/en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN - English</option>
+                                        <option value="/lang/pa" {{ app()->getLocale() == 'pa' ? 'selected' : '' }}>PA - ਪੰਜਾਬੀ</option>
+                                        <option value="/lang/hi" {{ app()->getLocale() == 'hi' ? 'selected' : '' }}>HI - हिन्दी</option>
+                                    </select>
+                                    <span class="xr-lang-badge">{{ strtoupper(app()->getLocale()) }}</span>
+                                </div>
+                            </div>
+
+                            <div class="xr-dd-divider"></div>
+                            
                             <form action="{{ route('logout') }}" method="POST" style="margin:0">
                                 @csrf
                                 <button type="submit" class="xr-dd-logout">
@@ -714,7 +747,7 @@ x-init="
          ══════════════════════════════════════════════════════ -->
     <div x-cloak class="md:hidden">
 
-        <!-- Overlay -->
+        <!-- Overlay background fade -->
         <div
             x-show="open"
             x-transition:enter="transition ease-out duration-200"
@@ -724,10 +757,10 @@ x-init="
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
             @click="open = false"
-            class="xr-mob-overlay md:hidden">
+            class="xr-mob-overlay">
         </div>
 
-        <!-- Drawer panel -->
+        <!-- Drawer panel container sliding -->
         <div
             x-show="open"
             x-transition:enter="transition ease-out duration-280 transform"
@@ -739,52 +772,79 @@ x-init="
             class="xr-mob-drawer">
 
             <div class="xr-mob-inner">
-                {{-- Explicit close ✕ button --}}
+                {{-- Explicit close panel button --}}
                 <button
                     @click="open = false"
-                    class="xr-mob-close md:hidden"
+                    class="xr-mob-close"
                     type="button"
                     aria-label="Close menu">✕</button>
+                
                 <!-- Nav section -->
                 <div class="xr-mob-section-label">Navigation</div>
 
-                <a href="{{ route('home') }}"        @click="open=false" class="xr-mob-link">
+                <a href="{{ route('home') }}"        @click="open=false" class="xr-mob-link {{ request()->routeIs('home') ? 'active' : '' }}">
                     <span class="mob-icon">⌂</span> Home
                 </a>
-                <a href="{{ route('about') }}"       @click="open=false" class="xr-mob-link">
+                <a href="{{ route('about') }}"       @click="open=false" class="xr-mob-link {{ request()->routeIs('about') ? 'active' : '' }}">
                     <span class="mob-icon">◇</span> About
                 </a>
-                <a href="{{ route('plans.index') }}" @click="open=false" class="xr-mob-link">
+                <a href="{{ route('plans.index') }}" @click="open=false" class="xr-mob-link {{ request()->routeIs('plans.index') ? 'active' : '' }}">
                     <span class="mob-icon">☰</span> Plans
                 </a>
-                <a href="{{ route('vr') }}"          @click="open=false" class="xr-mob-link ar-highlight">
+                <a href="{{ route('vr') }}"          @click="open=false" class="xr-mob-link ar-highlight {{ request()->routeIs('vr') ? 'active' : '' }}">
                     <span class="mob-icon">◈</span> AR Demo
                     <span style="margin-left:auto;font-size:9px;letter-spacing:1.5px;color:rgba(139,92,246,0.7);text-transform:uppercase">Live</span>
                 </a>
-                <a href="{{ route('contact') }}"     @click="open=false" class="xr-mob-link">
+                <a href="{{ route('contact') }}"     @click="open=false" class="xr-mob-link {{ request()->routeIs('contact') ? 'active' : '' }}">
                     <span class="mob-icon">✉</span> Contact
                 </a>
 
                 <div class="xr-mob-divider"></div>
 
-                <!-- Auth section -->
+                <!-- Shared Mobile Preferences Selector -->
+                <div class="xr-mob-section-label">Preferences</div>
+                <div style="padding: 4px 12px 14px;">
+                    <div class="cyber-lang-wrapper">
+                        <span class="lang-icon">LANG:</span>
+                        <select class="cyber-select" onchange="window.location.href=this.value">
+                            <option value="" disabled {{ !session()->has('locale') ? 'selected' : '' }}>Select Language</option>
+                            <option value="/lang/en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN - English</option>
+                            <option value="/lang/pa" {{ app()->getLocale() == 'pa' ? 'selected' : '' }}>PA - ਪੰਜਾਬੀ</option>
+                            <option value="/lang/hi" {{ app()->getLocale() == 'hi' ? 'selected' : '' }}>HI - हिन्दी</option>
+                        </select>
+                        <span class="xr-lang-badge">{{ strtoupper(app()->getLocale()) }}</span>
+                    </div>
+                </div>
+
+                <div class="xr-mob-divider"></div>
+
+                <!-- Auth section area -->
                 <div class="xr-mob-auth">
 
                     @if($isAuthenticated)
-                        <!-- User card -->
+                        <!-- User Identification Card Details Layout -->
                         <div class="xr-mob-user-card">
                             <div class="xr-mob-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
                             <div class="xr-mob-user-info">
                                 <div class="xr-mob-user-name">{{ Auth::user()->name }}</div>
-                                <div class="xr-mob-user-tag">● Policy Active</div>
+                                <div class="xr-mob-user-tag">{{ $isAdmin ? '⚡ System Admin' : '● Policy Active' }}</div>
                             </div>
                         </div>
 
+                        <!-- Account Navigation Options Area -->
                         <div class="xr-mob-section-label" style="margin-top:4px;">Account</div>
-                        <a href="{{ route('dashboard') }}"  @click="open=false" class="xr-mob-link">
+                        
+                        {{-- Integrated Mobile Admin Link --}}
+                        @if($isAdmin)
+                            <a href="{{ route('admin.dashboard') }}" @click="open=false" class="xr-mob-link admin-highlight">
+                                <span class="mob-icon">⚡</span> Admin Panel
+                            </a>
+                        @endif
+
+                        <a href="{{ route('dashboard') }}"   @click="open=false" class="xr-mob-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                             <span class="mob-icon">⬡</span> Dashboard
                         </a>
-                        <a href="{{ route('profile.edit') }}" @click="open=false" class="xr-mob-link">
+                        <a href="{{ route('profile.edit') }}" @click="open=false" class="xr-mob-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
                             <span class="mob-icon">◎</span> My Profile
                         </a>
 
