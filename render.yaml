@@ -21,7 +21,7 @@ services:
         value: stack
 
       # --- Secure AI Agent Variables ---
-     - key: GROQ_API_KEY
+      - key: GROQ_API_KEY
         sync: false # Render dashboard UI will securely prompt you to insert this value
 
       - key: MONGO_URI
