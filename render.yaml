@@ -1,28 +1,55 @@
 services:
+  # =========================
+  # FASTAPI AI BACKEND
+  # =========================
+  - type: web
+    name: arvr-ai-backend
+    runtime: docker
+    rootDir: ai-backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+
+      - key: MONGODB_URI
+        sync: false
+
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
+  # =========================
+  # LARAVEL FRONTEND
+  # =========================
   - type: web
     name: arvr-insurance
     runtime: docker
+    rootDir: .
+    dockerfilePath: ./Dockerfile
     plan: free
 
     envVars:
       - key: APP_ENV
         value: production
 
-      - key: APP_URL
-        value: https://arvr-insurance.onrender.com
-
       - key: APP_DEBUG
         value: false
 
-      - key: DB_CONNECTION
-        value: mongodb
+      - key: APP_URL
+        value: https://arvr-insurance.onrender.com
 
       - key: LOG_CHANNEL
         value: stack
 
-      # --- Secure AI Agent Variables ---
-      - key: GROQ_API_KEY
-        sync: false # Render dashboard UI will securely prompt you to insert this value
+      - key: DB_CONNECTION
+        value: mongodb
+
+      - key: FASTAPI_URL
+        value: https://arvr-ai-backend.onrender.com
 
       - key: MONGO_URI
-        fromEnvVar: MONGO_URI # This instructs Render to safely pull the value you already saved 
+        sync: false
+
+      - key: APP_KEY
+        sync: false
