@@ -20,6 +20,15 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * 🔥 FIX: Default attributes for new user documents in MongoDB
+     * This forces every new record to have is_admin = false automatically.
+     */
+    protected $attributes = [
+        'is_admin' => false,
+        'role' => 'user', // Good practice to default the role string too!
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -54,6 +63,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean', // Force MongoDB to always cast it to a real boolean
         ];
     }
 
@@ -66,14 +76,24 @@ class User extends Authenticatable
     {
         return $this->hasMany(Claim::class);
     }
-    public function policyApplications()
-{
-    return $this->hasMany(Policy::class, 'user_id');
-}
 
-public function isAdmin(): bool
+    public function policyApplications()
     {
-        // Casts to boolean safely in case it's stored as 1/0 or true/false
-        return (bool) ($this->is_admin ?? false);
+        return $this->hasMany(Policy::class, 'user_id');
     }
+
+    public function isAdmin(): bool
+{
+    // 1. If explicitly true or a truthy string/integer, they are an admin
+    if (filter_var($this->is_admin ?? false, FILTER_VALIDATE_BOOLEAN)) {
+        return true;
+    }
+
+    // 2. Backup check: match by role string if is_admin didn't evaluate cleanly
+    if (isset($this->role) && strtolower($this->role) === 'admin') {
+        return true;
+    }
+
+    return false;
+}
 }
