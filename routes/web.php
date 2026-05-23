@@ -13,6 +13,10 @@ Route::get('/lang/{locale}', function ($locale) {
     session(['locale' => $locale]);
     return redirect()->back();
 });
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/claims', [ClaimController::class, 'adminIndex'])->name('admin.claims.index');
+    Route::post('/admin/claims/{id}/resolve', [ClaimController::class, 'adminResolve'])->name('admin.claims.resolve');
+});
 Route::get('/', [PageController::class, 'welcome'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');

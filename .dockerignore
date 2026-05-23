@@ -3,3 +3,7 @@
 .env
 .git
 /public/build
+ai-backend/venv/
+ai-backend/chroma_db/
+ai-backend/__pycache__/
+*.pyc

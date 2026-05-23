@@ -1,11 +1,20 @@
+# Global setting to enforce Linux line endings across Windows/Mac/Linux
 * text=auto eol=lf
 
+# Existing syntax highlighting diff markers
 *.blade.php diff=html
 *.css diff=css
 *.html diff=html
 *.md diff=markdown
 *.php diff=php
 
+# FastAPI / Python execution rules
+*.py text eol=lf
+
+# Prevent text-normalization corruption of local vector database binaries
+ai-backend/chroma_db/** binary
+
+# Existing distribution ignores
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore

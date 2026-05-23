@@ -13,6 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'ai_backend' => [
+    'url' => env('FASTAPI_URL', 'http://localhost:8000'),
+    ],
 
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),

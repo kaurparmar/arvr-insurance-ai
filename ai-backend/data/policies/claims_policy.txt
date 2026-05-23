@@ -1,0 +1,2 @@
+Policy Name: Corporate Claims Processing Rules
+Rule Base: All active policies must show consistent monthly premium records. Claims filed within the first 15 days of policy registration are automatically flagged for physical assessment. Any claim submission exceeding the policy limits or filed with missing medical discharge slips must be instantly flagged or rejected by the processing workflow.

@@ -22,3 +22,17 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Virtual environment
+ai-backend/venv/
+ai-backend/env/
+
+# Local environment variables and credentials
+ai-backend/.env
+
+# Python cache and compiled bytecode
+ai-backend/__pycache__/
+ai-backend/**/*.pyc
+
+# Local runtime data / logs (optional)
+ai-backend/*.log

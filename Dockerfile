@@ -1,6 +1,6 @@
 FROM php:8.2-cli
 
-# Install dependencies and build tools
+# Install system dependencies, build tools, plus Python 3 and pip
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     libssl-dev \
     zlib1g-dev \
+    python3 \
+    python3-pip \
+    python3-venv \
     && docker-php-ext-install zip \
     && rm -rf /var/lib/apt/lists/*
 
@@ -42,20 +45,29 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
-# Copy project files
+# Copy project files (includes both Laravel project and ai-backend directory)
 COPY . .
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install frontend dependencies
+# Install frontend dependencies and build assets
 RUN npm install
-
-# Build frontend assets
 RUN npm run build
 
-# Expose port
+# --- AI Backend Setup Layer ---
+# Set environment flags to prevent warning crashes on cloud architectures
+ENV PYTHONUNBUFFERED=1
+ENV HF_HUB_DISABLE_SYMLINKS_WARNING=1
+
+# Install Python requirements globally inside the container environment
+RUN pip3 install --no-cache-dir --break-system-packages -r ai-backend/requirements.txt
+
+# Run the 100% free vector ingestion phase during image construction
+RUN python3 ai-backend/tools/rag_tools.py --ingest
+
+# Expose Laravel public traffic port
 EXPOSE 8000
 
-# Start Laravel
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+# Write a start shell execution string to boot BOTH systems simultaneously
+CMD python3 -m uvicorn ai-backend.main:app --host 0.0.0.0 --port 8001 & php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
