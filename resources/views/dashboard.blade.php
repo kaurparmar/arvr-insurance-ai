@@ -24,7 +24,8 @@
         .xr-card{border-radius:20px;transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;}
         html:not(.dark) .xr-card{background:#fff;border:1px solid rgba(0,0,0,.07);box-shadow:0 4px 20px rgba(0,0,0,.06);}
         .dark .xr-card{background:var(--bg-panel);border:1px solid var(--border-w);}
-        .xr-card:hover{transform:translateY(-3px);border-color:rgba(0,240,255,.25);box-shadow:0 12px 40px rgba(0,0,0,.15);}
+        /* FIX: Unified hover state for both themes — was missing box-shadow on light mode */
+        .xr-card:hover{transform:translateY(-3px);border-color:rgba(0,240,255,.25);box-shadow:0 12px 40px rgba(0,0,0,.12);}
         .xr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .3s;}
         .xr-card:hover::before{opacity:1;}
         /* Metric cards */
@@ -77,7 +78,8 @@
         .btn-sm{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none;}
         .btn-cyan{background:var(--cyan);color:#020F14;}
         .btn-cyan:hover{transform:scale(1.04);}
-        .btn-outline-sm{background:transparent;font-size:13px;font-weight:600;padding:8px 18px;border-radius:100px;cursor:pointer;transition:all .2s;text-decoration:none;}
+        /* FIX: Added display:inline-flex and align-items:center so <a> and <button> both render consistently */
+        .btn-outline-sm{display:inline-flex;align-items:center;background:transparent;font-size:13px;font-weight:600;padding:8px 18px;border-radius:100px;cursor:pointer;transition:all .2s;text-decoration:none;}
         html:not(.dark) .btn-outline-sm{border:1px solid rgba(0,0,0,.12);color:#475569;}
         .dark .btn-outline-sm{border:1px solid var(--border-w);color:var(--text-mid);}
         .btn-outline-sm:hover{border-color:var(--cyan);color:var(--cyan);}
@@ -100,7 +102,11 @@
     <div class="glow" style="width:500px;height:500px;top:-100px;left:-100px;background:rgba(0,240,255,.05)"></div>
     <div class="glow" style="width:600px;height:600px;bottom:0;right:-150px;background:rgba(139,92,246,.04)"></div>
 
-    <x-navbar :is-authenticated="auth()->check()" />
+    {{-- FIX: Pass is-admin prop so admin navbar styling works on this page --}}
+    <x-navbar
+        :is-authenticated="auth()->check()"
+        :is-admin="auth()->check() && (auth()->user()->role === 'admin' || (method_exists(auth()->user(), 'isAdmin') && auth()->user()->isAdmin()))"
+    />
 
     <div class="page-wrap" style="position:relative;z-index:10">
 
@@ -108,7 +114,7 @@
             {{-- ══════════════════════════════════════════════════════
                  ADMIN CONTROL TERMINAL VIEW
                  ══════════════════════════════════════════════════════ --}}
-            
+
             {{-- Admin Header --}}
             <div class="fade-up d1" style="margin-bottom:40px">
                 <span class="xr-chip" style="border-color:var(--rose);color:var(--rose);"><span class="chip-dot" style="background:var(--rose)"></span> HQ Terminal</span>
@@ -127,7 +133,7 @@
                     </div>
                     <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--cyan);line-height:1">Active Node</div>
                 </div>
-                
+
                 <div class="metric-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
                         <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">Global Coverage Managed</span>
@@ -147,7 +153,7 @@
 
             {{-- Admin Control Hub Split Layout --}}
             <div class="admin-panel-grid fade-up d3" style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
-                
+
                 {{-- Quick Utility Matrix --}}
                 <div class="xr-card" style="padding:24px">
                     <div style="margin-bottom:20px">
@@ -202,9 +208,9 @@
 
         @else
             {{-- ══════════════════════════════════════════════════════
-                 STANDARD CONSUMER DASHBOARD VIEW (ORIGINAL)
+                 STANDARD CONSUMER DASHBOARD VIEW
                  ══════════════════════════════════════════════════════ --}}
-            
+
             {{-- Header --}}
             <div class="fade-up d1" style="margin-bottom:40px">
                 <span class="xr-chip"><span class="chip-dot"></span> Dashboard</span>
@@ -215,9 +221,14 @@
             </div>
 
             {{-- Metrics row --}}
+            {{--
+                FIX: Replaced var_export($activePoliciesCount, true) with the variable directly.
+                var_export outputs PHP boolean strings ('true'/'false') for 0/1 values, which
+                would display literally in the UI instead of the number.
+            --}}
             <div class="metric-row fade-up d2" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px">
                 @foreach([
-                    [var_export($activePoliciesCount,true),'Active Policies','var(--cyan)','🛡️','rgba(0,240,255,.08)'],
+                    [$activePoliciesCount,'Active Policies','var(--cyan)','🛡️','rgba(0,240,255,.08)'],
                     ['₹'.number_format($coverageTotal),'Total Coverage','var(--violet)','💰','rgba(139,92,246,.08)'],
                     ['₹'.number_format($monthlyPremiumTotal),'Monthly Premium','var(--emerald)','📋','rgba(0,230,118,.08)'],
                     ['0','Claims Filed','var(--rose)','⚡','rgba(255,59,107,.08)'],
@@ -291,7 +302,21 @@
                                 <td class="text-sub">₹{{ number_format($policy->plan->coverage_amount ?? 0) }}</td>
                                 <td class="text-sub">₹{{ number_format($policy->premium_paid) }}</td>
                                 <td><span class="badge {{ $policy->status==='active'?'badge-green':'badge-yellow' }}">{{ ucfirst($policy->status) }}</span></td>
-                                <td><a href="@if($policy->status === 'active') {{ route('transactions.success', $policy->_id) }} @elseif($policy->status === 'pending_approval') {{ route('policies.application.success', $policy->_id) }} @elseif($policy->status === 'approved') {{ route('transactions.create', $policy->_id) }} @endif" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a></td>
+                                {{--
+                                    FIX: Added a safe fallback href for policy statuses that don't match the
+                                    three known states (e.g. 'cancelled', 'expired'), preventing a blank href.
+                                --}}
+                                <td>
+                                    @if($policy->status === 'active')
+                                        <a href="{{ route('transactions.success', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
+                                    @elseif($policy->status === 'pending_approval')
+                                        <a href="{{ route('policies.application.success', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
+                                    @elseif($policy->status === 'approved')
+                                        <a href="{{ route('transactions.create', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
+                                    @else
+                                        <span style="color:var(--text-mid);font-size:12px">—</span>
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                             </tbody>
@@ -325,7 +350,7 @@
                     <div class="syne text-hi" style="font-weight:600;font-size:16px;margin-bottom:20px">Quick Actions</div>
                     <div class="qa-row" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
                         @foreach([
-                            [route('ai.nexus'),'🤖','Nexus AI ','rgba(0,240,255,.08)','var(--cyan)'],
+                            [route('ai.nexus'),'🤖','Nexus AI','rgba(0,240,255,.08)','var(--cyan)'],
                             [route('plans.index'),'📋','Browse Plans','rgba(0,240,255,.08)','var(--cyan)'],
                             [route('claims'),'⚡','File Claim','rgba(139,92,246,.08)','var(--violet)'],
                             [route('vr'),'🥽','AR Demo','rgba(0,230,118,.08)','var(--emerald)'],

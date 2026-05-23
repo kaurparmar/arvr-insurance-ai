@@ -1,6 +1,3 @@
-<div>
-    <!-- Simplicity is the essence of happiness. - Cedric Bledsoe -->
-</div>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -22,16 +19,16 @@
         .dark .vr-scanlines{display:block;}
         .glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;opacity:0;transition:opacity .5s;}
         .dark .glow{opacity:1;}
-        
+
         /* Layout Framework */
         .page-wrap{max-width:1200px;margin:0 auto;padding:80px 28px 60px;position:relative;z-index:10;}
         .nexus-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:stretch;}
-        
+
         /* Chat Interface Styles */
         .chat-container{border-radius:24px;display:flex;flex-direction:column;height:600px;position:relative;overflow:hidden;backdrop-filter:blur(20px);}
         html:not(.dark) .chat-container{background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 10px 30px rgba(0,0,0,.04);}
         .dark .chat-container{background:var(--bg-panel);border:1px solid var(--border-w);box-shadow:0 20px 50px rgba(0,0,0,.3);}
-        
+
         .chat-stream{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:18px;}
         /* Custom Scrollbar */
         .chat-stream::-webkit-scrollbar{width:6px;}
@@ -44,23 +41,23 @@
         .msg-row{display:flex;width:100%;animation:msgFadeUp .3s forwards;}
         .msg-row.incoming{justify-content:flex-start;}
         .msg-row.outgoing{justify-content:flex-end;}
-        
+
         .bubble{max-width:75%;padding:14px 18px;border-radius:18px;font-size:14px;line-height:1.5;position:relative;}
         .incoming .bubble{border-radius:4px 18px 18px 18px;}
         html:not(.dark) .incoming .bubble{background:#F1F5F9;color:#1E293B;}
         .dark .incoming .bubble{background:rgba(255,255,255,.03);color:#E2E8F0;border:1px solid rgba(255,255,255,.04);}
-        
+
         .outgoing .bubble{border-radius:18px 18px 4px 18px;background:linear-gradient(135deg, var(--violet), #6D28D9);color:#fff;}
-        
+
         /* Console Input Block */
         .input-tray{padding:16px 24px;border-top:1px solid;display:flex;gap:12px;align-items:center;}
         html:not(.dark) .input-tray{border-color:rgba(0,0,0,.06);background:#FAFCFF;}
         .dark .input-tray{border-color:var(--border-w);background:rgba(3,6,15,.4);}
-        
+
         .console-input{flex:1;background:transparent;border:none;outline:none;font-size:14px;padding:8px 0;}
         html:not(.dark) .console-input{color:#0F172A;}
         .dark .console-input{color:#EEF2FF;}
-        
+
         /* Suggestion Chips */
         .suggest-pill{padding:8px 16px;border-radius:100px;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-block;}
         html:not(.dark) .suggest-pill{background:#fff;border:1px solid rgba(0,0,0,.1);color:#475569;}
@@ -71,11 +68,12 @@
         .xr-card{border-radius:20px;padding:24px;position:relative;overflow:hidden;}
         html:not(.dark) .xr-card{background:#fff;border:1px solid rgba(0,0,0,.07);box-shadow:0 4px 20px rgba(0,0,0,.06);}
         .dark .xr-card{background:var(--bg-panel);border:1px solid var(--border-w);}
-        
+
         .xr-chip{display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.2);color:var(--cyan);}
         .chip-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:blink 1.5s infinite;}
         .text-hi{color:#0F172A;}.dark .text-hi{color:#EEF2FF;}
         .text-sub{color:#64748B;}.dark .text-sub{color:var(--text-mid);}
+        .agent-node-card{transition:all .2s;cursor:pointer;}
         .agent-node-card:hover { border-color: rgba(0,240,255,0.3) !important; background: rgba(255,255,255,0.02); }
         .agent-node-card.active { border-color: var(--cyan) !important; background: rgba(0,240,255,0.04); box-shadow: 0 0 15px rgba(0,240,255,0.1); }
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
@@ -88,10 +86,14 @@
     <div class="glow" style="width:500px;height:500px;top:-100px;left:-100px;background:rgba(0,240,255,.06)"></div>
     <div class="glow" style="width:600px;height:600px;bottom:0;right:-150px;background:rgba(139,92,246,.04)"></div>
 
-    <x-navbar :is-authenticated="auth()->check()" />
+    {{-- FIX: Pass is-admin prop so admin navbar styling works on this page --}}
+    <x-navbar
+        :is-authenticated="auth()->check()"
+        :is-admin="auth()->check() && (auth()->user()->role === 'admin' || (method_exists(auth()->user(), 'isAdmin') && auth()->user()->isAdmin()))"
+    />
 
     <div class="page-wrap">
-        
+
         {{-- Header Section --}}
         <div style="margin-bottom:32px">
             <span class="xr-chip"><span class="chip-dot"></span> LifeShield Nexus Engine</span>
@@ -102,11 +104,11 @@
         </div>
 
         <div class="nexus-grid">
-            
+
             {{-- Left Side: The Nexus AI Chat Core --}}
             <div class="chat-container">
-                {{-- Stream Interface Header --}}
-                <div style="padding:16px 24px;border-bottom:1px solid;display:flex;align-items:center;justify-content:between;" class="dark:border-white/5 border-slate-100">
+                {{-- FIX: justify-content:between → justify-content:space-between (valid CSS) --}}
+                <div style="padding:16px 24px;border-bottom:1px solid;display:flex;align-items:center;justify-content:space-between;" class="dark:border-white/5 border-slate-100">
                     <div style="display:flex;align-items:center;gap:12px">
                         <div style="width:10px;height:10px;border-radius:50%;background:var(--emerald);box-shadow:0 0 10px var(--emerald)"></div>
                         <span class="syne text-hi" style="font-weight:600;font-size:14px;letter-spacing:0.5px">NEXUS_V1.8_ONLINE</span>
@@ -148,15 +150,15 @@
                 <div class="xr-card">
                     <h3 class="syne text-hi" style="font-weight:600;font-size:16px;margin-bottom:4px">Neural Agent Mesh</h3>
                     <p class="text-sub" style="font-size:12px;margin-bottom:16px">Select a dedicated subprocess sub-agent node to delegate your operational queries:</p>
-                    
+
                     <div style="display:flex;flex-direction:column;gap:12px" id="agentSelectorGroup">
                         @foreach($agents as $key => $agent)
-                            <div class="agent-node-card {{ $loop->first ? 'active' : '' }}" 
+                            <div class="agent-node-card {{ $loop->first ? 'active' : '' }}"
                                  data-agent-key="{{ $key }}"
                                  data-agent-name="{{ $agent['name'] }}"
                                  data-agent-badge="{{ $agent['badge'] }}"
                                  onclick="switchAgent(this)"
-                                 style="border: 1px solid var(--border-w); padding: 14px; border-radius: 14px; cursor: pointer; transition: all 0.2s;">
+                                 style="border: 1px solid var(--border-w); padding: 14px; border-radius: 14px;">
                                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
                                     <span class="syne text-hi" style="font-weight:600; font-size:13px;">{{ $agent['icon'] }} {{ $agent['name'] }}</span>
                                     <span style="font-size:9px; font-weight:bold; color:{{ $agent['color'] }}; background:rgba(255,255,255,0.03); padding:2px 8px; border-radius:4px; letter-spacing:0.5px;">{{ $agent['badge'] }}</span>
@@ -174,16 +176,10 @@
         let activeAgentKey = '{{ array_key_first($agents) }}';
 
         function switchAgent(element) {
-            // Clear old layout active state signatures
             document.querySelectorAll('.agent-node-card').forEach(card => card.classList.remove('active'));
-            
-            // Assert active signature on target node
             element.classList.add('active');
             activeAgentKey = element.getAttribute('data-agent-key');
-            
-            // Append architectural notification notice inside stream console
             const agentName = element.getAttribute('data-agent-name');
-            const agentBadge = element.getAttribute('data-agent-badge');
             appendMessage(`<em>🔄 System routing altered: Core handoff executed to channel node [<strong>${agentName}</strong>]. Ready for localized operations.</em>`, 'incoming');
         }
 
@@ -191,11 +187,9 @@
             const stream = document.getElementById('chatStream');
             const row = document.createElement('div');
             row.className = `msg-row ${side}`;
-            
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
             bubble.innerHTML = text;
-            
             row.appendChild(bubble);
             stream.appendChild(row);
             stream.scrollTop = stream.scrollHeight;
@@ -212,16 +206,13 @@
             const prompt = inputField.value.trim();
             if(!prompt) return;
 
-            // Render output message immediately
             appendMessage(prompt, 'outgoing');
             inputField.value = '';
-            
-            // Add safe localized loader state
+
             const btn = document.getElementById('sendBtn');
             btn.disabled = true;
             btn.innerText = 'PROCESSING...';
 
-            // Dynamically targets /ai-nexus/chat/{agentKey} using backticks
             fetch(`{{ url('/ai-nexus/chat') }}/${activeAgentKey}`, {
                 method: "POST",
                 headers: {

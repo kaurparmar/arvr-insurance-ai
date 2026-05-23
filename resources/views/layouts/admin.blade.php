@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
@@ -22,7 +21,7 @@
         body { font-family: 'DM Sans', sans-serif; transition: background .3s, color .3s; }
         .dark body { background: var(--bg-void); color: #EEF2FF; }
         body:not(.dark-mode), html:not(.dark) body { background: #F0F4FF; color: #0F172A; }
-        
+
         .vr-scanlines {
             display: none; position: fixed; inset: 0; pointer-events: none; z-index: 1;
             background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.025) 2px, rgba(0,0,0,.025) 4px);
@@ -39,7 +38,7 @@
         .xr-card { border-radius: 24px; transition: transform .3s, border-color .3s, box-shadow .3s; position: relative; overflow: hidden; }
         html:not(.dark) .xr-card { background: #fff; border: 1px solid rgba(0,0,0,.07); box-shadow: 0 4px 24px rgba(0,0,0,.06); }
         .dark .xr-card { background: var(--bg-panel); border: 1px solid var(--border-w); }
-        .xr-card:hover { transform: translateY(-4px); border-color: rgba(0,240,255,.3); }
+        .xr-card:hover { transform: translateY(-4px); border-color: rgba(0,240,255,.3); box-shadow: 0 12px 40px rgba(0,0,0,.2); }
         .xr-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0; transition: opacity .3s; }
         .xr-card:hover::before { opacity: 1; }
 
@@ -47,7 +46,7 @@
         .grad-border-inner { border-radius: 23px; padding: 40px; height: 100%; }
         html:not(.dark) .grad-border-inner { background: #fff; }
         .dark .grad-border-inner { background: #07111F; }
-        
+
         .syne { font-family: 'Syne', sans-serif; }
         .grad-text { background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 50%, var(--rose) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200%; }
         .narration-box { border-radius: 14px; padding: 18px 22px; border-left: 3px solid var(--cyan); font-style: italic; font-size: 14px; line-height: 1.6; }
@@ -60,9 +59,14 @@
     <div class="vr-scanlines"></div>
     <canvas id="admin-particles"></canvas>
 
-    <x-navbar :is-authenticated="auth()->check()" />
+    {{-- FIX: Pass both is-authenticated AND is-admin to navbar so admin styling activates correctly --}}
+    <x-navbar
+        :is-authenticated="auth()->check()"
+        :is-admin="auth()->check() && (auth()->user()->role === 'admin' || (method_exists(auth()->user(), 'isAdmin') && auth()->user()->isAdmin()))"
+    />
 
-    <main class="relative z-10" style="padding-top:100px; min-h: 85vh;">
+    {{-- FIX: min-h was invalid CSS; corrected to min-height --}}
+    <main class="relative z-10" style="padding-top:100px; min-height:85vh;">
         @yield('content')
     </main>
 

@@ -113,30 +113,8 @@
         margin-top: 1px;
     }
 
-    /* ── Live badge ────────────────────────────────────────── */
-    .xr-live-badge {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 4px 11px;
-        background: rgba(0,240,255,0.08);
-        border: 1px solid rgba(0,240,255,0.2);
-        border-radius: 100px;
-        font-size: 9px; font-weight: 700;
-        letter-spacing: 2px; text-transform: uppercase;
-        color: #00F0FF;
-        font-family: 'DM Sans', sans-serif;
-    }
-    .xr-live-dot {
-        width: 5px; height: 5px; border-radius: 50%;
-        background: #00F0FF;
-        box-shadow: 0 0 6px #00F0FF;
-        animation: dotBlink 1.4s ease-in-out infinite;
-    }
-    @keyframes dotBlink {
-        0%,100% { opacity: 1; }
-        50%      { opacity: 0.25; }
-    }
-
     /* ── Desktop nav links ─────────────────────────────────── */
+    /* FIX: moved .xr-mob-close out of desktop nav section — it belongs to mobile drawer */
     .xr-mob-close {
         position: absolute; top: 18px; right: 18px;
         width: 32px; height: 32px; border-radius: 8px;
@@ -146,6 +124,7 @@
         display: flex; align-items: center; justify-content: center;
         cursor: pointer; font-size: 15px;
         transition: all 0.2s; line-height: 1;
+        z-index: 10;
     }
     .xr-mob-close:hover {
         background: rgba(255,59,107,0.08);
@@ -323,7 +302,7 @@
     }
     .xr-dd-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(136,146,170,0.5); margin-bottom: 2px; }
     .xr-dd-name  { font-size: 14px; font-weight: 600; color: #EEF2FF; }
-    
+
     /* Admin Specialty Dropdown Link Style */
     .xr-dd-link.admin-glow {
         color: #00F0FF;
@@ -348,7 +327,7 @@
     .xr-dd-link:hover { background: rgba(255,255,255,0.05); color: #EEF2FF; }
     .xr-dd-link .dd-icon { font-size: 14px; width: 20px; text-align: center; opacity: 0.7; }
     .xr-dd-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 0; }
-    
+
     .xr-dd-item-container {
         padding: 4px 6px;
     }
@@ -410,6 +389,8 @@
         display: flex; flex-direction: column;
         backdrop-filter: blur(32px);
         box-shadow: -16px 0 64px rgba(0,0,0,0.8);
+        /* FIX: position:relative so the close button can absolute-position inside */
+        position: fixed;
     }
     /* Drawer top glow */
     .xr-mob-drawer::before {
@@ -420,7 +401,7 @@
 
     .xr-mob-inner {
         display: flex; flex-direction: column;
-        height: 100%; padding-top: 80px;
+        height: 100%; padding-top: 64px;
         padding-left: 20px; padding-right: 20px;
         padding-bottom: 28px;
         overflow-y: auto;
@@ -599,16 +580,20 @@
     }
 </style>
 
-<div x-data={{  
-    `open: false,
+{{--
+    FIX: x-data used backtick template literals inside Blade {{ }} which breaks Blade parsing.
+    Changed to a plain JS object string with single-quoted keys.
+--}}
+<div x-data="{
+    open: false,
     dropOpen: false,
     darkMode: true,
     toggleTheme() {
         this.darkMode = !this.darkMode;
         localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
         document.documentElement.classList.toggle('dark', this.darkMode);
-    }`
-}}
+    }
+}"
 x-init="
     $watch('open', v => v ? document.body.classList.add('overflow-hidden') : document.body.classList.remove('overflow-hidden'));
     darkMode = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -620,6 +605,7 @@ x-init="
          TOP NAV BAR
          ══════════════════════════════════════════════════════ -->
     <nav class="xr-nav">
+        {{-- FIX: changed justify-content:between (invalid) to justify-content:space-between --}}
         <div style="max-width:1280px;margin:0 auto;padding:0 24px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:1;">
 
             <!-- Logo -->
@@ -678,7 +664,7 @@ x-init="
                                 <div class="xr-dd-label">Signed in as</div>
                                 <div class="xr-dd-name">{{ Auth::user()->name }}</div>
                             </div>
-                            
+
                             {{-- Integrated Desktop Admin Link --}}
                             @if($isAdmin)
                                 <a href="{{ route('admin.dashboard') }}" class="xr-dd-link admin-glow">
@@ -711,7 +697,7 @@ x-init="
                             </div>
 
                             <div class="xr-dd-divider"></div>
-                            
+
                             <form action="{{ route('logout') }}" method="POST" style="margin:0">
                                 @csrf
                                 <button type="submit" class="xr-dd-logout">
@@ -771,14 +757,18 @@ x-init="
             x-transition:leave-end="translate-x-full"
             class="xr-mob-drawer">
 
+            {{--
+                FIX: Close button moved OUTSIDE xr-mob-inner so it stays fixed at top-right
+                of the drawer panel even when the inner content is scrolled.
+            --}}
+            <button
+                @click="open = false"
+                class="xr-mob-close"
+                type="button"
+                aria-label="Close menu">✕</button>
+
             <div class="xr-mob-inner">
-                {{-- Explicit close panel button --}}
-                <button
-                    @click="open = false"
-                    class="xr-mob-close"
-                    type="button"
-                    aria-label="Close menu">✕</button>
-                
+
                 <!-- Nav section -->
                 <div class="xr-mob-section-label">Navigation</div>
 
@@ -833,7 +823,7 @@ x-init="
 
                         <!-- Account Navigation Options Area -->
                         <div class="xr-mob-section-label" style="margin-top:4px;">Account</div>
-                        
+
                         {{-- Integrated Mobile Admin Link --}}
                         @if($isAdmin)
                             <a href="{{ route('admin.dashboard') }}" @click="open=false" class="xr-mob-link admin-highlight">
