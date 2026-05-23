@@ -65,7 +65,7 @@ ENV HF_HUB_DISABLE_SYMLINKS_WARNING=1
 
 # FIX: Force-update pip and wheel tools first. This gives Python 3.13 the blueprint
 # it needs to compile older legacy packages like chroma-hnswlib without throwing errors.
-RUN pip3 install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel
+RUN pip3 install --no-cache-dir --break-system-packages --ignore-installed --upgrade pip setuptools wheel
 
 # Install Python requirements globally inside the container environment
 RUN pip3 install --no-cache-dir --break-system-packages -r ai-backend/requirements.txt
