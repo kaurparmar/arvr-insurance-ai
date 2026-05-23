@@ -19,6 +19,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install zip \
     && rm -rf /var/lib/apt/lists/*
 
+# 🔥 FIX: Install and register the PHP MongoDB extension required by your project
+RUN pecl install mongodb \
+    && docker-php-ext-enable mongodb
+
 # Fix: Ensure pip, setuptools, and wheel upgrade smoothly ignoring Debian blocks
 RUN pip3 install --no-cache-dir --break-system-packages --ignore-installed --upgrade pip setuptools wheel
 
