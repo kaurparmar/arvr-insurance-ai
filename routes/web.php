@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AIInsuranceController;
 use App\Http\Controllers\Admin\ClaimResolutionController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 // --- Public Guest Workspace Routes ---
@@ -32,7 +33,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // 1. Core AI Multi-Agent Nexus Endpoints
     Route::get('/ai-nexus', [AIInsuranceController::class, 'index'])->name('ai.nexus');
-    Route::post('/ai-nexus/chat/{agent}', [AIInsuranceController::class, 'chat'])->name('ai.nexus.chat');
+    // routes/web.php
+Route::post('/ai-nexus/chat', [App\Http\Controllers\AiInsuranceController::class, 'handleChat']);
 
     // 2. Client Space Dashboard
     Route::get('/dashboard', function () {
@@ -75,5 +77,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Decision Processor Form Pipeline (Approve / Reject UI actions)
     Route::post('/claims/{id}/resolve', [ClaimResolutionController::class, 'resolve'])->name('claims.resolve');
 });
+
+
+// ── Admin: Policy actions
+Route::post('/admin/policies/{id}/approve', [DashboardController::class, 'approvePolicy'])->name('admin.policies.approve');
+Route::post('/admin/policies/{id}/reject',  [DashboardController::class, 'rejectPolicy'])->name('admin.policies.reject');
+ 
+// ── Admin: Claim actions
+Route::post('/admin/claims/{id}/approve', [DashboardController::class, 'approveClaim'])->name('admin.claims.approve');
+Route::post('/admin/claims/{id}/reject',  [DashboardController::class, 'rejectClaim'])->name('admin.claims.reject');
+Route::post('/admin/claims/{id}/review',  [DashboardController::class, 'reviewClaim'])->name('admin.claims.review');
+ 
+// ── Admin: User management
+Route::post('/admin/users/{id}/toggle', [DashboardController::class, 'toggleUser'])->name('admin.users.toggle');
+Route::delete('/admin/users/{id}',      [DashboardController::class, 'deleteUser'])->name('admin.users.delete');
 
 require __DIR__.'/auth.php';

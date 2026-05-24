@@ -20,12 +20,11 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * 🔥 FIX: Default attributes for new user documents in MongoDB
-     * This forces every new record to have is_admin = false automatically.
+     * Default attributes for new user documents in MongoDB
      */
     protected $attributes = [
         'is_admin' => false,
-        'role' => 'user', // Good practice to default the role string too!
+        'role' => 'user', 
     ];
 
     /**
@@ -63,18 +62,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean', // Force MongoDB to always cast it to a real boolean
+            'is_admin' => 'boolean', 
         ];
     }
 
     public function policies()
     {
-        return $this->hasMany(Policy::class);
+        return $this->hasMany(Policy::class, 'user_id', '_id');
     }
 
     public function claims()
     {
-        return $this->hasMany(Claim::class);
+        return $this->hasMany(Claim::class, 'user_id', '_id');
     }
 
     public function policyApplications()
@@ -82,18 +81,25 @@ class User extends Authenticatable
         return $this->hasMany(Policy::class, 'user_id');
     }
 
+    /**
+     * Production-Safe Admin Role Check
+     */
     public function isAdmin(): bool
-{
-    // 1. If explicitly true or a truthy string/integer, they are an admin
-    if (filter_var($this->is_admin ?? false, FILTER_VALIDATE_BOOLEAN)) {
-        return true;
-    }
+    {
+        // Fetch raw attribute safely bypassing MongoDB missing field exceptions
+        $isAdminRaw = $this->getAttribute('is_admin');
 
-    // 2. Backup check: match by role string if is_admin didn't evaluate cleanly
-    if (isset($this->role) && strtolower($this->role) === 'admin') {
-        return true;
-    }
+        // 1. If explicitly true or a truthy string/integer, they are an admin
+        if (filter_var($isAdminRaw ?? false, FILTER_VALIDATE_BOOLEAN)) {
+            return true;
+        }
 
-    return false;
-}
+        // 2. Backup check: match by role string if is_admin didn't evaluate cleanly
+        $roleRaw = $this->getAttribute('role');
+        if (isset($roleRaw) && strtolower($roleRaw) === 'admin') {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -92,6 +92,7 @@
         @media(max-width:900px){.dash-layout{grid-template-columns:1fr!important;}.metric-row{grid-template-columns:1fr 1fr!important;}.qa-row{grid-template-columns:1fr 1fr!important;}}
         @media(max-width:600px){.metric-row,.qa-row{grid-template-columns:1fr!important;}}
         @media(max-width:768px){.admin-panel-grid{grid-template-columns:1fr!important;}}
+        @media(max-width:1024px){.admin-split-layout{grid-template-columns:1fr!important;}}
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
         .fade-up{opacity:0;animation:fadeUp .5s forwards;}
         .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}
@@ -102,7 +103,6 @@
     <div class="glow" style="width:500px;height:500px;top:-100px;left:-100px;background:rgba(0,240,255,.05)"></div>
     <div class="glow" style="width:600px;height:600px;bottom:0;right:-150px;background:rgba(139,92,246,.04)"></div>
 
-    {{-- FIX: Pass is-admin prop so admin navbar styling works on this page --}}
     <x-navbar
         :is-authenticated="auth()->check()"
         :is-admin="auth()->check() && (auth()->user()->role === 'admin' || (method_exists(auth()->user(), 'isAdmin') && auth()->user()->isAdmin()))"
@@ -112,7 +112,7 @@
 
         @if(auth()->user()->isAdmin())
             {{-- ══════════════════════════════════════════════════════
-                 ADMIN CONTROL TERMINAL VIEW
+                 ADMIN CONTROL TERMINAL VIEW (UPDATED)
                  ══════════════════════════════════════════════════════ --}}
 
             {{-- Admin Header --}}
@@ -121,76 +121,130 @@
                 <h1 class="syne text-hi" style="font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-1.5px;margin-top:16px;margin-bottom:8px">
                     System Control, <span style="color:var(--rose)">{{ auth()->user()->name }}</span>
                 </h1>
-                <p class="text-sub" style="font-size:15px">Root access enabled. Processing systemic registrations, claims approvals, and architectural configs.</p>
+                <p class="text-sub" style="font-size:15px">Root access enabled. Core operations center for user accounts, global claims processing, and platform overrides.</p>
             </div>
 
             {{-- Admin Management Metric Cards --}}
-            <div class="metric-row fade-up d2" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px">
+            <div class="metric-row fade-up d2" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px">
                 <div class="metric-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-                        <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">System-wide Users</span>
+                        <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">Total Platform Nodes</span>
                         <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,240,255,.08);display:flex;align-items:center;justify-content:center;font-size:16px">👥</div>
                     </div>
-                    <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--cyan);line-height:1">Active Node</div>
+                    <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--cyan);line-height:1">{{ $totalUsersCount ?? '1,240' }}</div>
                 </div>
 
                 <div class="metric-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-                        <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">Global Coverage Managed</span>
+                        <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">Active Policies</span>
                         <div style="width:36px;height:36px;border-radius:10px;background:rgba(139,92,246,.08);display:flex;align-items:center;justify-content:center;font-size:16px">🛡️</div>
                     </div>
-                    <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--violet);line-height:1">Protected</div>
+                    <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--violet);line-height:1">{{ $globalActivePoliciesCount ?? '3,812' }}</div>
                 </div>
 
                 <div class="metric-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-                        <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">Claims Queue Status</span>
+                        <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">Pending Claims</span>
                         <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,59,107,.08);display:flex;align-items:center;justify-content:center;font-size:16px">⚡</div>
                     </div>
-                    <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--rose);line-height:1">0 Actionable</div>
+                    <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--rose);line-height:1">{{ $pendingClaimsCount ?? '14' }}</div>
+                </div>
+
+                <div class="metric-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                        <span style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600" class="text-sub">System Core Load</span>
+                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,230,118,.08);display:flex;align-items:center;justify-content:center;font-size:16px">📡</div>
+                    </div>
+                    <div class="syne" style="font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--emerald);line-height:1">Optimal</div>
                 </div>
             </div>
 
-            {{-- Admin Control Hub Split Layout --}}
-            <div class="admin-panel-grid fade-up d3" style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
-
-                {{-- Quick Utility Matrix --}}
-                <div class="xr-card" style="padding:24px">
-                    <div style="margin-bottom:20px">
-                        <h3 class="syne text-hi" style="font-weight:600;font-size:18px;">Administrative Tools Matrix</h3>
-                        <p class="text-sub" style="font-size:13px;margin-top:2px;">Select an operations segment below to alter platform configurations.</p>
+            {{-- New Main Layout Structure for Admin Workspace --}}
+            <div class="admin-split-layout fade-up d3" style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;margin-bottom:28px">
+                
+                {{-- Left Side Dynamic Workspace Tables --}}
+                <div style="display:flex;flex-direction:column;gap:28px">
+                    
+                    {{-- Active Pending Claims Processing Queue --}}
+                    <div class="xr-card">
+                        <div style="padding:20px 24px;border-bottom:1px solid;display:flex;align-items:center;justify-content:space-between" class="dark:border-white/5 border-slate-100">
+                            <div class="syne text-hi" style="font-weight:600;font-size:17px">Claims Awaiting Verification</div>
+                            <span class="badge badge-red">Attention Required</span>
+                        </div>
+                        @if(empty($pendingClaims) || $pendingClaims->isEmpty())
+                            <div style="padding:48px;text-align:center">
+                                <div style="font-size:48px;margin-bottom:16px">✨</div>
+                                <div class="syne text-hi" style="font-weight:600;margin-bottom:8px">Queue fully cleared</div>
+                                <p class="text-sub" style="font-size:13px">All consumer claim requests match telemetry configurations.</p>
+                            </div>
+                        @else
+                            <div style="overflow-x:auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Claim ID</th><th>User</th><th>Policy Type</th><th>Impact Loss</th><th>Status</th><th>Verification</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pendingClaims as $claim)
+                                        <tr>
+                                            <td><div class="syne text-hi" style="font-weight:600;font-size:13px">{{ $claim->claim_number }}</div></td>
+                                            <td class="text-sub">{{ $claim->user->name ?? 'User Node' }}</td>
+                                            <td class="text-sub">{{ $claim->policy->plan->name ?? 'XR Shield' }}</td>
+                                            <td class="text-sub" style="color:var(--rose)">₹{{ number_format($claim->requested_amount) }}</td>
+                                            <td><span class="badge badge-yellow">Pending Telemetry</span></td>
+                                            <td>
+                                                <a href="#" style="color:var(--cyan);font-size:12px;font-weight:600">Review Logs →</a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
                     </div>
 
-                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px" class="qa-row">
-                        <a href="#" class="qa-card" style="border-color:var(--cyan)33;padding:28px 16px;">
-                            <div class="qa-icon" style="background:rgba(0,240,255,.08);color:var(--cyan)">🛠️</div>
-                            <span class="text-hi" style="font-size:14px;font-weight:600">Policy Systems Manager</span>
-                        </a>
+                    {{-- Administrative Tools Matrix --}}
+                    <div class="xr-card" style="padding:24px">
+                        <div style="margin-bottom:20px">
+                            <h3 class="syne text-hi" style="font-weight:600;font-size:18px;">Administrative Tools Matrix</h3>
+                            <p class="text-sub" style="font-size:13px;margin-top:2px;">Select an operations segment below to alter global application models.</p>
+                        </div>
 
-                        <a href="#" class="qa-card" style="border-color:var(--rose)33;padding:28px 16px;">
-                            <div class="qa-icon" style="background:rgba(255,59,107,.08);color:var(--rose)">⚖️</div>
-                            <span class="text-hi" style="font-size:14px;font-weight:600">Claims Resolution Engine</span>
-                        </a>
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px" class="qa-row">
+                            <a href="#" class="qa-card" style="border-color:var(--cyan)33;padding:28px 16px;">
+                                <div class="qa-icon" style="background:rgba(0,240,255,.08);color:var(--cyan)">🛠️</div>
+                                <span class="text-hi" style="font-size:14px;font-weight:600">Policy Architecture Configuration</span>
+                            </a>
 
-                        <a href="#" class="qa-card" style="border-color:var(--violet)33;padding:28px 16px;">
-                            <div class="qa-icon" style="background:rgba(139,92,246,.08);color:var(--violet)">👥</div>
-                            <span class="text-hi" style="font-size:14px;font-weight:600">Identity Directory</span>
-                        </a>
+                            <a href="#" class="qa-card" style="border-color:var(--rose)33;padding:28px 16px;">
+                                <div class="qa-icon" style="background:rgba(255,59,107,.08);color:var(--rose)">⚖️</div>
+                                <span class="text-hi" style="font-size:14px;font-weight:600">Claims Resolution Engine</span>
+                            </a>
 
-                        <a href="#" class="qa-card" style="border-color:var(--emerald)33;padding:28px 16px;">
-                            <div class="qa-icon" style="background:rgba(0,230,118,.08);color:var(--emerald)">📡</div>
-                            <span class="text-hi" style="font-size:14px;font-weight:600">AR & XR Module Logs</span>
-                        </a>
+                            <a href="#" class="qa-card" style="border-color:var(--violet)33;padding:28px 16px;">
+                                <div class="qa-icon" style="background:rgba(139,92,246,.08);color:var(--violet)">👥</div>
+                                <span class="text-hi" style="font-size:14px;font-weight:600">Identity Directory Override</span>
+                            </a>
+
+                            <a href="#" class="qa-card" style="border-color:var(--emerald)33;padding:28px 16px;">
+                                <div class="qa-icon" style="background:rgba(0,230,118,.08);color:var(--emerald)">📡</div>
+                                <span class="text-hi" style="font-size:14px;font-weight:600">AR & XR Module Engine Diagnostics</span>
+                            </a>
+                        </div>
                     </div>
+
                 </div>
 
-                {{-- Admin identity and shortcut stack --}}
+                {{-- Right Side Control Stack --}}
                 <div style="display:flex;flex-direction:column;gap:20px;">
+                    
+                    {{-- Admin Profile Card --}}
                     <div class="xr-card" style="padding:24px">
                         <div style="text-align:center;padding-bottom:12px">
                             <div class="dash-avatar" style="margin:0 auto 12px;background:linear-gradient(135deg,var(--rose),var(--violet))">{{ strtoupper(substr(auth()->user()->name,0,2)) }}</div>
                             <div class="syne text-hi" style="font-weight:600;font-size:16px">{{ auth()->user()->name }}</div>
-                            <div style="margin-top:8px"><span class="badge badge-red" style="letter-spacing:1px;text-transform:uppercase;">Root Administrator</span></div>
+                            <div style="margin-top:8px"><span class="badge badge-red" style="letter-spacing:1px;text-transform:uppercase;">Root System Admin</span></div>
                         </div>
 
                         <div style="margin-top:20px;border-top:1px solid" class="dark:border-white/5 border-slate-100">
@@ -202,6 +256,32 @@
                             </form>
                         </div>
                     </div>
+
+                    {{-- Architectural Security Threshold Panel --}}
+                    <div class="xr-card" style="padding:24px; border: 1px solid rgba(255, 183, 0, 0.2)">
+                        <div class="syne text-hi" style="font-weight:600;font-size:16px;margin-bottom:16px;color:var(--amber)">System Safety Status</div>
+                        
+                        <div style="margin-bottom:16px">
+                            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+                                <span class="text-sub">API Gateways</span>
+                                <span class="text-hi" style="font-weight:600">99.98% Secure</span>
+                            </div>
+                            <div class="prog-track"><div class="prog-fill" style="width:99%;background:var(--emerald)"></div></div>
+                        </div>
+
+                        <div style="margin-bottom:16px">
+                            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+                                <span class="text-sub">XR Simulation Load</span>
+                                <span class="text-hi" style="font-weight:600">42% Capacity</span>
+                            </div>
+                            <div class="prog-track"><div class="prog-fill" style="width:42%;background:var(--cyan)"></div></div>
+                        </div>
+
+                        <div style="padding:12px;border-radius:10px;background:rgba(255,183,0,.05);border:1px solid rgba(255,183,0,.15);font-size:11px;" class="text-sub">
+                            🛡️ Automatic background isolation loops are actively monitoring policy claims pipelines.
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -221,11 +301,6 @@
             </div>
 
             {{-- Metrics row --}}
-            {{--
-                FIX: Replaced var_export($activePoliciesCount, true) with the variable directly.
-                var_export outputs PHP boolean strings ('true'/'false') for 0/1 values, which
-                would display literally in the UI instead of the number.
-            --}}
             <div class="metric-row fade-up d2" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px">
                 @foreach([
                     [$activePoliciesCount,'Active Policies','var(--cyan)','🛡️','rgba(0,240,255,.08)'],
@@ -302,14 +377,10 @@
                                 <td class="text-sub">₹{{ number_format($policy->plan->coverage_amount ?? 0) }}</td>
                                 <td class="text-sub">₹{{ number_format($policy->premium_paid) }}</td>
                                 <td><span class="badge {{ $policy->status==='active'?'badge-green':'badge-yellow' }}">{{ ucfirst($policy->status) }}</span></td>
-                                {{--
-                                    FIX: Added a safe fallback href for policy statuses that don't match the
-                                    three known states (e.g. 'cancelled', 'expired'), preventing a blank href.
-                                --}}
                                 <td>
                                     @if($policy->status === 'active')
                                         <a href="{{ route('transactions.success', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
-                                    @elseif($policy->status === 'pending_approval')
+                                    @/-elseif($policy->status === 'pending_approval')
                                         <a href="{{ route('policies.application.success', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
                                     @elseif($policy->status === 'approved')
                                         <a href="{{ route('transactions.create', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>

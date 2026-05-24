@@ -1,0 +1,11 @@
+PLAN_ID: endowment_plan
+NAME: Endowment Plan
+CATEGORY: Life Insurance
+DESCRIPTION: A dual-purpose financial instrument combining risk mitigation life coverage with safe maturity savings accumulation.
+COVERAGE_AMOUNT: ₹1,500,000
+PREMIUM_AMOUNT: ₹12,000/year
+DURATION: 25 Years
+FEATURES:
+- Life Cover: Active financial shield throughout the policy duration.
+- Maturity Benefit: Lump-sum survival payout at the end of 25 years.
+- Bonus Additions: Periodic institutional bonuses added over time to increase maturity value.   

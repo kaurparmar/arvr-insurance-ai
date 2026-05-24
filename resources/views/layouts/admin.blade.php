@@ -59,13 +59,13 @@
     <div class="vr-scanlines"></div>
     <canvas id="admin-particles"></canvas>
 
-    {{-- FIX: Pass both is-authenticated AND is-admin to navbar so admin styling activates correctly --}}
+    
     <x-navbar
         :is-authenticated="auth()->check()"
         :is-admin="auth()->check() && (auth()->user()->role === 'admin' || (method_exists(auth()->user(), 'isAdmin') && auth()->user()->isAdmin()))"
     />
 
-    {{-- FIX: min-h was invalid CSS; corrected to min-height --}}
+
     <main class="relative z-10" style="padding-top:100px; min-height:85vh;">
         @yield('content')
     </main>

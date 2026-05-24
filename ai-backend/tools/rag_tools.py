@@ -1,9 +1,10 @@
 import os
 import sys
+import traceback
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 CHROMA_PATH = os.path.join(os.path.dirname(__file__), "../chroma_db")
 DATA_PATH = os.path.join(os.path.dirname(__file__), "../data/policies")
@@ -11,7 +12,14 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), "../data/policies")
 def get_vector_store():
     """Initializes and returns the persistent Chroma client instance using free local models."""
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    return Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
+    try:
+        # Attempt to load existing vector store
+        return Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
+    except Exception as e:
+        print(f"❌ CHROMA INITIALIZATION CRASH: {str(e)}")
+        print(traceback.format_exc())
+        raise e
+    # return Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
 
 def ingest_knowledge_base():
     """Reads policy text docs, splits into semantic chunks, and updates vector store for free."""

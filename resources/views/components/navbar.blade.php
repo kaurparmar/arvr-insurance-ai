@@ -667,7 +667,7 @@ x-init="
 
                             {{-- Integrated Desktop Admin Link --}}
                             @if($isAdmin)
-                                <a href="{{ route('admin.dashboard') }}" class="xr-dd-link admin-glow">
+                                <a href="{{ route('dashboard') }}" class="xr-dd-link admin-glow">
                                     <span class="dd-icon" style="opacity:1">⚡</span> Admin Panel
                                 </a>
                                 <div class="xr-dd-divider"></div>
@@ -826,7 +826,7 @@ x-init="
 
                         {{-- Integrated Mobile Admin Link --}}
                         @if($isAdmin)
-                            <a href="{{ route('admin.dashboard') }}" @click="open=false" class="xr-mob-link admin-highlight">
+                            <a href="{{ route('dashboard') }}" @click="open=false" class="xr-mob-link admin-highlight">
                                 <span class="mob-icon">⚡</span> Admin Panel
                             </a>
                         @endif

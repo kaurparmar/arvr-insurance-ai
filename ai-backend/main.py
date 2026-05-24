@@ -1,37 +1,32 @@
 import os
+import traceback
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import uvicorn
-from agents.rag_agent import execute_rag_search
-from agents.claim_agent import evaluate_insurance_claim
-from agents.support_agent import route_and_process_support
+
+# Bring in the master agent manager and custom tool metrics
+from orchestrator import nexus_orchestrator
 from agents.review_agent import build_human_review_summary
 from tools.mongo_tools import update_claim_assessment
 
 load_dotenv()
 
-app = FastAPI(title="ARVR Insurance AI Capstone Orchestrator Engine", version="1.0.0")
+app = FastAPI(title="ARVR Insurance AI Capstone Orchestrator Engine", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with specific live Railway URL patterns during deployment
+    allow_origins=["*"], # Replace with specific live Railway URL patterns during deployment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Pydantic Schema Definitions
-class RagQuery(BaseModel):
-    question: str
-
-class ClaimEvaluationQuery(BaseModel):
-    claim_id: str
-
-class SupportQuery(BaseModel):
-    user_id: str
-    message: str
+# Unified Multi-Agent Input Schema
+class NexusChatPayload(BaseModel):
+    prompt: str
+    context_id: str = None # Can seamlessly accept claim_id, user_id, or policy references
 
 class HumanReviewPayload(BaseModel):
     claim_id: str
@@ -46,45 +41,41 @@ class UpdateClaimStatusPayload(BaseModel):
 # Endpoints Mapping
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "agents": ["rag", "claim", "support", "review"]}
+    return {"status": "ok", "orchestrator_layer_active": True}
 
-@app.post("/api/ask")
-def ask_rag_policy(payload: RagQuery):
+# --- THE SINGLE AGENTIC CONVERSATION ENTRY PATHWAY ---
+@app.post("/api/nexus-chat")
+def handle_agentic_conversation(payload: NexusChatPayload):
     try:
-        return execute_rag_search(payload.question)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/evaluate-claim")
-def process_claim_evaluation(payload: ClaimEvaluationQuery):
-    result = evaluate_insurance_claim(payload.claim_id)
-    if "error" in result:
-        raise HTTPException(status_code=400, detail=result["error"])
-    
-    # --- Orchestrator Workflow Pattern ---
-    # If Agent 2 flags the claim, automatically trigger Agent 4 to generate the review card
-    if result.get("recommendation") == "flag":
-        review_card = build_human_review_summary(
-            claim_id=payload.claim_id,
-            ai_recommendation=result["recommendation"],
-            reason=result["reason"]
+        if not payload.prompt.strip():
+            raise HTTPException(status_code=400, detail="User message cannot be left blank.")
+            
+        # Dispatch prompt directly to our supervisor layer
+        agent_response = nexus_orchestrator(
+            user_prompt=payload.prompt, 
+            context_id=payload.context_id
         )
-        result["orchestrator_escalation"] = True
-        result["review_summary"] = review_card["summary"]
-    return result
-
-@app.post("/api/support")
-def process_customer_support(payload: SupportQuery):
-    try:
-        return route_and_process_support(payload.user_id, payload.message)
+        
+        # If a downstream agent explicitly caught an operational check error, bounce it as a 400
+        if isinstance(agent_response, dict) and "error" in agent_response:
+            raise HTTPException(status_code=400, detail=agent_response["error"])
+            
+        return agent_response
+        
+    except HTTPException as http_ex:
+        raise http_ex
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print("❌ Critical Core Exception inside /api/nexus-chat execution context:")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Core Agent Network breakdown: {str(e)}")
 
+# Keep manual admin override hooks accessible for your frontend management dashboard layouts
 @app.post("/api/flag-for-review")
 def force_manual_review_card(payload: HumanReviewPayload):
     try:
         return build_human_review_summary(payload.claim_id, payload.recommendation, payload.reason)
     except Exception as e:
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/update-claim-status")
@@ -96,8 +87,8 @@ def update_claim_status_endpoint(payload: UpdateClaimStatusPayload):
         })
         return {"success": True}
     except Exception as e:
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

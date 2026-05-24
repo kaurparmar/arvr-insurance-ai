@@ -39,12 +39,12 @@ class Claim extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', '_id');
     }
 
     public function policy()
     {
-        return $this->belongsTo(Policy::class);
+        return $this->belongsTo(Policy::class, 'policy_id', '_id');
     }
 
     public function getStatusColorAttribute()

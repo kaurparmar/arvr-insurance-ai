@@ -1,0 +1,11 @@
+PLAN_ID: term_life_20_years
+NAME: Term Life 20 Years
+CATEGORY: Life Insurance
+DESCRIPTION: Comprehensive long-term financial protection offering high coverage limits for a fixed 20-year window. Designed for long-term family security and primary breadwinners.
+COVERAGE_AMOUNT: ₹2,000,000
+PREMIUM_AMOUNT: ₹15,000/year
+DURATION: 20 Years
+FEATURES:
+- Death Benefit: Full sum assured paid to beneficiaries upon the insured's demise.
+- Terminal Illness Cover: Early payout option if diagnosed with a terminal medical condition.
+- Accidental Death Benefit: Additional payout booster if death occurs due to an accident.

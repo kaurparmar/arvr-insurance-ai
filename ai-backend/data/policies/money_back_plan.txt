@@ -1,0 +1,11 @@
+PLAN_ID: money_back_plan
+NAME: Money Back Plan
+CATEGORY: Life Insurance
+DESCRIPTION: A liquidity-focused life insurance setup offering regular, periodic survival cash payouts throughout the term. Excellent for policyholders who need ongoing liquidity while remaining insured.
+COVERAGE_AMOUNT: ₹1,500,000
+PREMIUM_AMOUNT: ₹18,000/year
+DURATION: 20 Years
+FEATURES:
+- Life Cover: Uninterrupted protection across the entire 20-year framework.
+- Periodic Payouts: Regular intervals of cash returns (survival benefits) paid out before maturity.
+- Survival Benefits: Helps meet milestone expenses like child education or property investments.

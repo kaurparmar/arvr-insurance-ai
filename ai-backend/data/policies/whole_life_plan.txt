@@ -1,0 +1,11 @@
+PLAN_ID: whole_life_insurance
+NAME: Whole Life Insurance
+CATEGORY: Life Insurance
+DESCRIPTION: Permanent, lifetime protection valid up to 100 years of age with structured guaranteed cash value buildup. Ideal for estate planning and legacy transfer.
+COVERAGE_AMOUNT: ₹5,000,000
+PREMIUM_AMOUNT: ₹25,000/year
+DURATION: 100 Years (Valid up to age 100)
+FEATURES:
+- Lifetime Cover: Assured peace of mind with protection extending up to age 100.
+- Cash Value Accumulation: Tax-advantaged cash equity growth within the policy layer.
+- Loan Facility: Borrowing eligibility against the accrued policy cash value for emergencies.

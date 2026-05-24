@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
     <title>Nexus AI Intel — {{ config('app.name', 'LifeShield XR') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <script>(function(){const t=localStorage.theme,d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(!t&&d)){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}})();</script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root{--cyan:#00F0FF;--violet:#8B5CF6;--rose:#FF3B6B;--emerald:#00E676;--amber:#FFB700;--bg-void:#03060F;--bg-deep:#060C1A;--bg-panel:rgba(8,14,30,.92);--text-mid:#8892AA;--border:rgba(0,240,255,.1);--border-w:rgba(255,255,255,.07);}
@@ -30,7 +32,6 @@
         .dark .chat-container{background:var(--bg-panel);border:1px solid var(--border-w);box-shadow:0 20px 50px rgba(0,0,0,.3);}
 
         .chat-stream{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:18px;}
-        /* Custom Scrollbar */
         .chat-stream::-webkit-scrollbar{width:6px;}
         .chat-stream::-webkit-scrollbar-track{background:transparent;}
         .chat-stream::-webkit-scrollbar-thumb{border-radius:10px;}
@@ -46,7 +47,6 @@
         .incoming .bubble{border-radius:4px 18px 18px 18px;}
         html:not(.dark) .incoming .bubble{background:#F1F5F9;color:#1E293B;}
         .dark .incoming .bubble{background:rgba(255,255,255,.03);color:#E2E8F0;border:1px solid rgba(255,255,255,.04);}
-
         .outgoing .bubble{border-radius:18px 18px 4px 18px;background:linear-gradient(135deg, var(--violet), #6D28D9);color:#fff;}
 
         /* Console Input Block */
@@ -73,9 +73,11 @@
         .chip-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:blink 1.5s infinite;}
         .text-hi{color:#0F172A;}.dark .text-hi{color:#EEF2FF;}
         .text-sub{color:#64748B;}.dark .text-sub{color:var(--text-mid);}
-        .agent-node-card{transition:all .2s;cursor:pointer;}
-        .agent-node-card:hover { border-color: rgba(0,240,255,0.3) !important; background: rgba(255,255,255,0.02); }
-        .agent-node-card.active { border-color: var(--cyan) !important; background: rgba(0,240,255,0.04); box-shadow: 0 0 15px rgba(0,240,255,0.1); }
+        
+        /* Modifying the Cards to represent dynamic automated mesh connections */
+        .agent-node-card{transition:all .3s ease;opacity:0.6;}
+        .agent-node-card.active { border-color: var(--cyan) !important; background: rgba(0,240,255,0.05); box-shadow: 0 0 15px rgba(0,240,255,0.15); opacity:1; }
+        
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
         @keyframes msgFadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         @media(max-width:900px){.nexus-grid{grid-template-columns:1fr!important;}}
@@ -86,58 +88,53 @@
     <div class="glow" style="width:500px;height:500px;top:-100px;left:-100px;background:rgba(0,240,255,.06)"></div>
     <div class="glow" style="width:600px;height:600px;bottom:0;right:-150px;background:rgba(139,92,246,.04)"></div>
 
-    {{-- FIX: Pass is-admin prop so admin navbar styling works on this page --}}
     <x-navbar
         :is-authenticated="auth()->check()"
         :is-admin="auth()->check() && (auth()->user()->role === 'admin' || (method_exists(auth()->user(), 'isAdmin') && auth()->user()->isAdmin()))"
     />
 
     <div class="page-wrap">
-
         {{-- Header Section --}}
         <div style="margin-bottom:32px">
             <span class="xr-chip"><span class="chip-dot"></span> LifeShield Nexus Engine</span>
             <h1 class="syne text-hi" style="font-size:clamp(24px,4vw,40px);font-weight:800;letter-spacing:-1.2px;margin-top:12px;margin-bottom:6px">
                 Nexus Core <span style="color:var(--cyan)">AI Intel</span>
             </h1>
-            <p class="text-sub" style="font-size:14px">Real-time claim structural audits, instant policy assessments, and synthetic risk generation diagnostics.</p>
+            <p class="text-sub" style="font-size:14px">Real-time claim structural audits, instant policy assessments, and autonomous multi-agent routing workflows.</p>
         </div>
 
         <div class="nexus-grid">
-
             {{-- Left Side: The Nexus AI Chat Core --}}
             <div class="chat-container">
-                {{-- FIX: justify-content:between → justify-content:space-between (valid CSS) --}}
                 <div style="padding:16px 24px;border-bottom:1px solid;display:flex;align-items:center;justify-content:space-between;" class="dark:border-white/5 border-slate-100">
                     <div style="display:flex;align-items:center;gap:12px">
                         <div style="width:10px;height:10px;border-radius:50%;background:var(--emerald);box-shadow:0 0 10px var(--emerald)"></div>
-                        <span class="syne text-hi" style="font-weight:600;font-size:14px;letter-spacing:0.5px">NEXUS_V1.8_ONLINE</span>
+                        <span class="syne text-hi" style="font-weight:600;font-size:14px;letter-spacing:0.5px;">NEXUS_ORCHESTRATOR_ACTIVE</span>
                     </div>
-                    <span class="text-sub" style="font-size:11px;font-family:monospace;">SECURE_SESSION_ENCRYPTED</span>
+                    <span class="text-sub" style="font-size:11px;font-family:monospace;">AUTONOMOUS_MESH_ROUTING</span>
                 </div>
 
                 {{-- Scrolling Message Area --}}
                 <div class="chat-stream" id="chatStream">
-                    <!-- Base Assistant Greeting Bubble -->
                     <div class="msg-row incoming">
                         <div class="bubble">
-                            Greetings, <strong>{{ auth()->user()->name }}</strong>. I am the <strong>LifeShield Nexus AI</strong>. I have indexed your current active coverage profiles. You can ask me to evaluate claims documents, simulate environmental structural damage for an AR validation run, or analyze adjustments to your monthly premiums. How shall we proceed?
+                            Greetings, <strong>{{ auth()->user()->name }}</strong>. I am the <strong>LifeShield Nexus Orchestrator</strong>. Speak to me naturally. I will automatically parse your intent and loop in our specialized claim assessment, risk validation, or customer service sub-agents dynamically. How shall we begin?
                         </div>
                     </div>
                 </div>
 
                 {{-- Interactive Shortcuts Prompt Area --}}
                 <div style="padding:0 24px 12px;overflow-x:auto;display:flex;gap:8px;" id="suggestionContainer">
-                    <span class="suggest-pill" onclick="sendSuggestion('Audit my existing coverage limits')">🔍 Audit Coverage</span>
-                    <span class="suggest-pill" onclick="sendSuggestion('File a synthetic claims incident blueprint')">⚡ Blueprint Incident</span>
-                    <span class="suggest-pill" onclick="sendSuggestion('How do I run an AR hardware simulation?')">🥽 AR Setup Intel</span>
+                    <span class="suggest-pill" onclick="sendSuggestion('Does my basic coverage include hardware flood damage?')">🔍 Audit Policy Coverage</span>
+                    <span class="suggest-pill" onclick="sendSuggestion('Run verification routing checks for claim ID 64f12ab9901')">⚡ Evaluate Claim</span>
+                    <span class="suggest-pill" onclick="sendSuggestion('I need assistance updating my billing setup details')">🥽 Support Help Desk</span>
                 </div>
 
                 {{-- Console Form Input Tray --}}
                 <form id="nexusForm" onsubmit="handleFormSubmit(event)">
                     <div class="input-tray">
                         <span style="font-size:16px;opacity:0.7">🤖</span>
-                        <input type="text" id="userInput" class="console-input" placeholder="Transmit direct query parameter to Nexus Core..." autocomplete="off" required>
+                        <input type="text" id="userInput" class="console-input" placeholder="Type an entry and let the neural mesh route it..." autocomplete="off" required>
                         <button type="submit" style="background:var(--cyan);color:#020F14;border:none;padding:8px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;transition:transform 0.2s;" id="sendBtn">
                             TRANSMIT →
                         </button>
@@ -145,44 +142,44 @@
                 </form>
             </div>
 
-            {{-- Right Side: Active Neural Agents Deck --}}
+            {{-- Right Side: Real-Time Dynamic Node Monitor --}}
             <div style="display:flex;flex-direction:column;gap:20px">
                 <div class="xr-card">
-                    <h3 class="syne text-hi" style="font-weight:600;font-size:16px;margin-bottom:4px">Neural Agent Mesh</h3>
-                    <p class="text-sub" style="font-size:12px;margin-bottom:16px">Select a dedicated subprocess sub-agent node to delegate your operational queries:</p>
+                    <h3 class="syne text-hi" style="font-weight:600;font-size:16px;margin-bottom:4px">Neural Node Mesh</h3>
+                    <p class="text-sub" style="font-size:12px;margin-bottom:16px">The orchestrator matches your queries to these internal agent arrays in real-time:</p>
 
                     <div style="display:flex;flex-direction:column;gap:12px" id="agentSelectorGroup">
-                        @foreach($agents as $key => $agent)
-                            <div class="agent-node-card {{ $loop->first ? 'active' : '' }}"
-                                 data-agent-key="{{ $key }}"
-                                 data-agent-name="{{ $agent['name'] }}"
-                                 data-agent-badge="{{ $agent['badge'] }}"
-                                 onclick="switchAgent(this)"
-                                 style="border: 1px solid var(--border-w); padding: 14px; border-radius: 14px;">
-                                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-                                    <span class="syne text-hi" style="font-weight:600; font-size:13px;">{{ $agent['icon'] }} {{ $agent['name'] }}</span>
-                                    <span style="font-size:9px; font-weight:bold; color:{{ $agent['color'] }}; background:rgba(255,255,255,0.03); padding:2px 8px; border-radius:4px; letter-spacing:0.5px;">{{ $agent['badge'] }}</span>
-                                </div>
+                        {{-- 
+                            We clean away the click event. The backend orchestrator handles it now.
+                            We keep basic data tokens for our frontend script matching loops.
+                        --}}
+                        <div class="agent-node-card" id="node-RAG" style="border: 1px solid var(--border-w); padding: 14px; border-radius: 14px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                                <span class="syne text-hi" style="font-weight:600; font-size:13px;">📋 Policy RAG Agent</span>
+                                <span style="font-size:9px; font-weight:bold; color:var(--cyan); background:rgba(255,255,255,0.03); padding:2px 8px; border-radius:4px;">VECTOR_STORE</span>
                             </div>
-                        @endforeach
+                        </div>
+
+                        <div class="agent-node-card" id="node-CLAIM" style="border: 1px solid var(--border-w); padding: 14px; border-radius: 14px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                                <span class="syne text-hi" style="font-weight:600; font-size:13px;">⚡ Claims Risk Evaluator</span>
+                                <span style="font-size:9px; font-weight:bold; color:var(--amber); background:rgba(255,255,255,0.03); padding:2px 8px; border-radius:4px;">RISK_AUDIT</span>
+                            </div>
+                        </div>
+
+                        <div class="agent-node-card" id="node-SUPPORT" style="border: 1px solid var(--border-w); padding: 14px; border-radius: 14px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                                <span class="syne text-hi" style="font-weight:600; font-size:13px;">💬 Support Router</span>
+                                <span style="font-size:9px; font-weight:bold; color:var(--emerald); background:rgba(255,255,255,0.03); padding:2px 8px; border-radius:4px;">DESK_HELP</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Frontend Interactivity & Non-blocking Stream Communication Script --}}
     <script>
-        let activeAgentKey = '{{ array_key_first($agents) }}';
-
-        function switchAgent(element) {
-            document.querySelectorAll('.agent-node-card').forEach(card => card.classList.remove('active'));
-            element.classList.add('active');
-            activeAgentKey = element.getAttribute('data-agent-key');
-            const agentName = element.getAttribute('data-agent-name');
-            appendMessage(`<em>🔄 System routing altered: Core handoff executed to channel node [<strong>${agentName}</strong>]. Ready for localized operations.</em>`, 'incoming');
-        }
-
         function appendMessage(text, side) {
             const stream = document.getElementById('chatStream');
             const row = document.createElement('div');
@@ -194,6 +191,34 @@
             stream.appendChild(row);
             stream.scrollTop = stream.scrollHeight;
         }
+
+        // Highlights which agent node the orchestrator matches on the fly
+        function visualizeActiveNode(nodeKey) {
+            document.querySelectorAll('.agent-node-card').forEach(card => card.classList.remove('active'));
+            const targetCard = document.getElementById(`node-${nodeKey}`);
+            if (targetCard) {
+                targetCard.classList.add('active');
+            }
+        }
+        function appendMessage(text, side) {
+    const stream = document.getElementById('chatStream');
+    const row = document.createElement('div');
+    row.className = `msg-row ${side}`;
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    
+    // If it's an incoming AI message response, translate the Markdown symbols to proper HTML tags
+    if (side === 'incoming') {
+        bubble.innerHTML = marked.parse(text);
+    } else {
+        // Keep the user's manual keyboard prompts as safe flat text strings
+        bubble.innerText = text;
+    }
+    
+    row.appendChild(bubble);
+    stream.appendChild(row);
+    stream.scrollTop = stream.scrollHeight;
+}
 
         function sendSuggestion(text) {
             document.getElementById('userInput').value = text;
@@ -213,23 +238,30 @@
             btn.disabled = true;
             btn.innerText = 'PROCESSING...';
 
-            fetch(`{{ url('/ai-nexus/chat') }}/${activeAgentKey}`, {
+            // Point to your new unified backend gateway orchestrator loop endpoint
+            fetch(`{{ url('/ai-nexus/chat') }}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
-                body: JSON.stringify({ message: prompt })
+                body: JSON.stringify({ prompt: prompt })
             })
             .then(res => {
                 if(!res.ok) throw new Error();
                 return res.json();
             })
             .then(data => {
-                appendMessage(data.reply, 'incoming');
+                // If your backend orchestrator returns which node it chose, light it up on screen!
+                if(data.intent_dispatched) {
+                    visualizeActiveNode(data.intent_dispatched);
+                }
+                
+                // Print the primary worker reply
+                appendMessage(data.reply || data.response || JSON.stringify(data), 'incoming');
             })
             .catch(() => {
-                appendMessage("<span style='color:var(--rose)'>⚠️ Critical Nexus uplink disruption. Unable to process neural weights. Please re-verify localized environment pipelines.</span>", 'incoming');
+                appendMessage("<span style='color:var(--rose)'>⚠️ Critical Nexus uplink disruption. Unable to process neural weights. Please check your orchestrator connection.</span>", 'incoming');
             })
             .finally(() => {
                 btn.disabled = false;

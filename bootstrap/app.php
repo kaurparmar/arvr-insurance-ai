@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ],
     
     );
+
+    $middleware->validateCsrfTokens(except: [
+        'ai-nexus/chat/*', // This completely clears the 419 error for all agents!
+    ]);
     $middleware->alias([
         'admin' => \App\Http\Middleware\IsAdmin::class,
     ]);
