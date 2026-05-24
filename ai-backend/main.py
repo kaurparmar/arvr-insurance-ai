@@ -17,7 +17,7 @@ app = FastAPI(title="ARVR Insurance AI Capstone Orchestrator Engine", version="2
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Replace with specific live Railway URL patterns during deployment
+    allow_origins=["https://arvr-ai-backend-igzh.onrender.com"], # Replace with specific live Railway URL patterns during deployment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
