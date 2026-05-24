@@ -380,7 +380,7 @@
                                 <td>
                                     @if($policy->status === 'active')
                                         <a href="{{ route('transactions.success', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
-                                    @/-elseif($policy->status === 'pending_approval')
+                                    @elseif($policy->status === 'pending_approval')
                                         <a href="{{ route('policies.application.success', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
                                     @elseif($policy->status === 'approved')
                                         <a href="{{ route('transactions.create', $policy->_id) }}" style="color:var(--cyan);font-size:12px;font-weight:600">View →</a>
