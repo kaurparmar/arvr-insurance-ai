@@ -37,7 +37,9 @@ class UpdateClaimStatusPayload(BaseModel):
     claim_id: str
     status: str
     admin_note: str
-
+@app.get("/")
+async def root():
+    return {"status": "Nexus Online"}
 # Endpoints Mapping
 @app.get("/api/health")
 def health_check():
@@ -91,4 +93,7 @@ def update_claim_status_endpoint(payload: UpdateClaimStatusPayload):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    # Render provides a PORT environment variable. If it's missing (local), default to 8000
+    port = int(os.environ.get("PORT", 8000))
+    # host must be 0.0.0.0 to be accessible outside the container
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
