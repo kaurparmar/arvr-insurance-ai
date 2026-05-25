@@ -39,7 +39,7 @@ class UpdateClaimStatusPayload(BaseModel):
     admin_note: str
 @app.get("/")
 async def root():
-    return {"status": "Nexus Online"}
+    return {"status": "online"}
 # Endpoints Mapping
 @app.get("/api/health")
 def health_check():

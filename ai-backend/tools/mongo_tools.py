@@ -5,17 +5,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGODB_URI = os.getenv("MONGODB_URI", "").strip()
-DB_NAME = os.getenv("DB_NAME", "arvr-insurance")
+# MONGODB_URI = os.getenv("MONGODB_URI", "").strip()
+# DB_NAME = os.getenv("DB_NAME", "arvr-insurance")
 
 def get_db_collection(collection_name: str):
-    if not MONGODB_URI:
-        raise ValueError("Critical Error: MONGODB_URI is missing or not loaded from your .env file!")
-        
-    client = MongoClient(MONGODB_URI)
+    uri = os.getenv("MONGODB_URI", "").strip()
+    db_name = os.getenv("DB_NAME", "arvr-insurance")
     
-    # FIX: Explicitly bypass get_default_database() to prevent Atlas from wandering into 'test'
-    db = client[DB_NAME]
+    if not uri:
+        # Instead of raising a fatal exception, log it so the server stays alive
+        print("CRITICAL: MONGODB_URI is not set in environment variables!")
+        return None 
+        
+    client = MongoClient(uri)
+    db = client[db_name]
     return db[collection_name]
 
 def get_claim_record(claim_id: str):
