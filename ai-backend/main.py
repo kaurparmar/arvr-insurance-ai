@@ -68,8 +68,19 @@ def handle_agentic_conversation(payload: NexusChatPayload):
         raise http_ex
     except Exception as e:
         print("❌ Critical Core Exception inside /api/nexus-chat execution context:")
-        print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Core Agent Network breakdown: {str(e)}")
+        error_trace=traceback.format_exc()
+        print(f"❌ Critical Exception: {error_trace}")
+        
+        # Raise an HTTPException that actually passes the error to the frontend
+        # This makes the error visible in the Browser Developer Tools (F12)
+        raise HTTPException(
+            status_code=500, 
+            detail={
+                "message": "Core Agent Network breakdown",
+                "error": str(e),
+                "traceback": error_trace
+            }
+        )
 
 # Keep manual admin override hooks accessible for your frontend management dashboard layouts
 @app.post("/api/flag-for-review")
